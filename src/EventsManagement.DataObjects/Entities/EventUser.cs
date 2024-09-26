@@ -10,14 +10,6 @@ namespace EventsManagement.DataObjects.Entities
 
         public int EventId { get; set; }
 
-        public string Name { get; set; }
-
-        public string Surname { get; set; }
-
-        public DateTime BirthDate { get; set; }
-
         public DateTime RegistrationDate { get; set; }
-
-        public string Email { get; set; }
     }
 }
