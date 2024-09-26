@@ -12,7 +12,7 @@ namespace EventsManagement.DataObjects.Entities
 
         public DateTime DateAndTime { get; set; }
 
-        public int CategoryId { get; set; }
+        public string Category { get; set; }
 
         public int MaxNumberOfParticipants { get; set; }
 
