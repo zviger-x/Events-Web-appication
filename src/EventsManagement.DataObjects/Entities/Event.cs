@@ -16,8 +16,6 @@ namespace EventsManagement.DataObjects.Entities
 
         public int MaxNumberOfParticipants { get; set; }
 
-        public IEnumerable<int> ParticipantsIds { get;set; }
-
         public byte[] Image { get; set; }
     }
 }
