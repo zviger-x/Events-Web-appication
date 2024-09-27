@@ -5,7 +5,7 @@ namespace EventsManagement.BusinessLogic.UnitOfWork
 {
     internal interface IUnitOfWork
     {
-        IRepository<Event> EventRepository { get; }
+        IEventRepository EventRepository { get; }
         IRepository<User> UserRepository { get; }
         IRepository<EventUser> EventUserRepository { get; }
     }

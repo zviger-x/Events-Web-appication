@@ -1,9 +1,10 @@
 ﻿using EventsManagement.DataAccess.Contexts;
+using EventsManagement.DataAccess.Repositories.Interfaces;
 using EventsManagement.DataObjects.Entities;
 
 namespace EventsManagement.DataAccess.Repositories
 {
-    internal class EventRepository : BaseRepository<Event>
+    internal class EventRepository : BaseRepository<Event>, IEventRepository
     {
         public EventRepository(EventsManagementDbContext context) : base(context)
         {
@@ -17,6 +18,11 @@ namespace EventsManagement.DataAccess.Repositories
         public override IQueryable<Event> GetAll()
         {
             return Context.Events;
+        }
+
+        public async Task<Event> GetByMame(string name)
+        {
+            return await Context.FindAsync<Event>(name);
         }
     }
 }
