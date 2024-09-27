@@ -1,19 +1,22 @@
-﻿using EventsManagement.BusinessLogic.Services.Interfaces;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using EventsManagement.BusinessLogic.DataTransferObjects;
+using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
-using EventsManagement.DataObjects.Entities;
 
 namespace EventsManagement.BusinessLogic.Services.EventUserService
 {
-    internal class EventUserGetAllUseCase : BaseUseCase, IGetAllUseCase<EventUser>
+    internal class EventUserGetAllUseCase : BaseUseCase, IGetAllUseCase<EventUserDTO>
     {
-        public EventUserGetAllUseCase(IUnitOfWork unitOfWork)
-            : base(unitOfWork)
+        public EventUserGetAllUseCase(IUnitOfWork unitOfWork, IMapper mapper)
+            : base(unitOfWork, mapper)
         {
         }
 
-        public IQueryable<EventUser> GetAll()
+        public IQueryable<EventUserDTO> GetAll()
         {
-            return _unitOfWork.EventUserRepository.GetAll();
+            var eventUsers = _unitOfWork.EventUserRepository.GetAll();
+            return eventUsers.ProjectTo<EventUserDTO>(_mapper.ConfigurationProvider);
         }
     }
 }

@@ -1,19 +1,21 @@
-﻿using EventsManagement.BusinessLogic.Services.Interfaces;
+﻿using AutoMapper;
+using EventsManagement.BusinessLogic.DataTransferObjects;
+using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
-using EventsManagement.DataObjects.Entities;
 
 namespace EventsManagement.BusinessLogic.Services.UserService
 {
-    internal class UserGetByIdUseCase : BaseUseCase, IGetByIdUseCase<User>
+    internal class UserGetByIdUseCase : BaseUseCase, IGetByIdUseCase<UserDTO>
     {
-        public UserGetByIdUseCase(IUnitOfWork unitOfWork)
-            : base(unitOfWork)
+        public UserGetByIdUseCase(IUnitOfWork unitOfWork, IMapper mapper)
+            : base(unitOfWork, mapper)
         {
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<UserDTO> GetById(int id)
         {
-            return await _unitOfWork.UserRepository.GetById(id);
+            var u = await _unitOfWork.UserRepository.GetById(id);
+            return _mapper.Map<UserDTO>(u);
         }
     }
 }

@@ -1,19 +1,22 @@
-﻿using EventsManagement.BusinessLogic.Services.Interfaces;
+﻿using AutoMapper;
+using EventsManagement.BusinessLogic.DataTransferObjects;
+using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.DataObjects.Entities;
 
 namespace EventsManagement.BusinessLogic.Services.EventUserService
 {
-    internal class EventUserCreateUseCase : BaseUseCase, ICreateUseCase<EventUser>
+    internal class EventUserCreateUseCase : BaseUseCase, ICreateUseCase<EventUserDTO>
     {
-        public EventUserCreateUseCase(IUnitOfWork unitOfWork)
-            : base(unitOfWork)
+        public EventUserCreateUseCase(IUnitOfWork unitOfWork, IMapper mapper)
+            : base(unitOfWork, mapper)
         {
         }
 
-        public async Task Create(EventUser entity)
+        public async Task Create(EventUserDTO entity)
         {
-            await _unitOfWork.EventUserRepository.Create(entity);
+            var e = _mapper.Map<EventUser>(entity);
+            await _unitOfWork.EventUserRepository.Create(e);
         }
     }
 }

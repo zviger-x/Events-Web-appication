@@ -1,19 +1,22 @@
-﻿using EventsManagement.BusinessLogic.Services.Interfaces;
+﻿using AutoMapper;
+using EventsManagement.BusinessLogic.DataTransferObjects;
+using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.DataObjects.Entities;
 
 namespace EventsManagement.BusinessLogic.Services.EventService
 {
-    internal class EventUpdateUseCase : BaseUseCase, IUpdateUseCase<Event>
+    internal class EventUpdateUseCase : BaseUseCase, IUpdateUseCase<EventDTO>
     {
-        public EventUpdateUseCase(IUnitOfWork unitOfWork)
-            : base(unitOfWork)
+        public EventUpdateUseCase(IUnitOfWork unitOfWork, IMapper mapper)
+            : base(unitOfWork, mapper)
         {
         }
 
-        public async Task Update(Event entity)
+        public async Task Update(EventDTO entity)
         {
-            await _unitOfWork.EventRepository.Update(entity);
+            var e = _mapper.Map<Event>(entity);
+            await _unitOfWork.EventRepository.Update(e);
         }
     }
 }

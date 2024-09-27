@@ -45,14 +45,14 @@ namespace EventsManagement.DataAccess.Repositories
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     Context.Dispose();
                 }
             }
-            disposed = true;
+            _disposed = true;
         }
 
         public void Dispose()

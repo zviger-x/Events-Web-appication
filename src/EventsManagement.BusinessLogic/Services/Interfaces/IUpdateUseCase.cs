@@ -1,9 +1,9 @@
-﻿using EventsManagement.DataObjects.Entities.Interfaces;
+﻿using EventsManagement.BusinessLogic.DataTransferObjects.Interfaces;
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
     internal interface IUpdateUseCase<T>
-        where T : IEntity
+        where T : IEntityDTO
     {
         /// <summary>
         /// Updates an entity in the repository.
