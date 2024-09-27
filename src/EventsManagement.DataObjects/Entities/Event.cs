@@ -2,7 +2,7 @@
 
 namespace EventsManagement.DataObjects.Entities
 {
-    internal class Event : IEntity
+    public class Event : IEntity
     {
         public int Id { get; set; }
 
@@ -16,6 +16,6 @@ namespace EventsManagement.DataObjects.Entities
 
         public int MaxNumberOfParticipants { get; set; }
 
-        public byte[] Image { get; set; }
+        public byte[]? Image { get; set; }
     }
 }

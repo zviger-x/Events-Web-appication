@@ -2,7 +2,7 @@
 
 namespace EventsManagement.DataObjects.Entities
 {
-    internal class EventUser : IEntity
+    public class EventUser : IEntity
     {
         public int Id { get; set; }
 
