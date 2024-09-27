@@ -4,9 +4,11 @@ using EventsManagement.DataObjects.Entities.Interfaces;
 
 namespace EventsManagement.DataAccess.Repositories
 {
-    internal abstract class BaseRepository<T> : IRepository<T>
+    internal abstract class BaseRepository<T> : IRepository<T>, IDisposable
         where T : IEntity
     {
+        private bool _disposed;
+
         protected BaseRepository(EventsManagementDbContext context)
         {
             Context = context;
@@ -40,5 +42,23 @@ namespace EventsManagement.DataAccess.Repositories
 
         /// <inheritdoc/>
         public abstract IQueryable<T> GetAll();
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    Context.Dispose();
+                }
+            }
+            disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
