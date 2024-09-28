@@ -7,6 +7,6 @@ namespace EventsManagement.BusinessLogic.UnitOfWork
     {
         IEventRepository EventRepository { get; }
         IRepository<User> UserRepository { get; }
-        IRepository<EventUser> EventUserRepository { get; }
+        IEventUserRepository EventUserRepository { get; }
     }
 }

@@ -35,7 +35,9 @@ namespace EventsManagement.DataAccess.Contexts
                 .ToTable("Users", "dbo");
 
             modelBuilder.Entity<EventUser>()
-                .ToTable("EventUsers", "dbo");
+                .ToTable("EventUsers", "dbo")
+                .Property(eu => eu.RegistrationDate)
+                .HasColumnName("Registration");
 
             base.OnModelCreating(modelBuilder);
         }
