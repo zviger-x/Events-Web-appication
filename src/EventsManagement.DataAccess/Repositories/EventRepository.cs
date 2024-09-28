@@ -1,6 +1,7 @@
 ﻿using EventsManagement.DataAccess.Contexts;
 using EventsManagement.DataAccess.Repositories.Interfaces;
 using EventsManagement.DataObjects.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.DataAccess.Repositories
 {
@@ -22,7 +23,22 @@ namespace EventsManagement.DataAccess.Repositories
 
         public async Task<Event> GetByMame(string name)
         {
-            return await Context.FindAsync<Event>(name);
+            return await Context.Events.FirstOrDefaultAsync(e => e.Name == name);
+        }
+
+        public IQueryable<Event> GetByDate(DateTime date)
+        {
+            return Context.Events.Where(e => e.DateAndTime == date);
+        }
+
+        public IQueryable<Event> GetByVenue(string venue)
+        {
+            return Context.Events.Where(e => e.Venue == venue);
+        }
+
+        public IQueryable<Event> GetByCategory(string category)
+        {
+            return Context.Events.Where(e => e.Category == category);
         }
     }
 }

@@ -6,7 +6,7 @@ VALUES
 
 INSERT INTO [dbo].[Events]
 VALUES
-('TestEvent', 'TestEventDescription', GETDATE(), 'TestCategory', 10, NULL)
+('TestEvent', 'TestEventDescription', GETDATE(), 'TestVenue', 'TestCategory', 10, NULL)
 
 INSERT INTO [dbo].[EventUsers]
 VALUES

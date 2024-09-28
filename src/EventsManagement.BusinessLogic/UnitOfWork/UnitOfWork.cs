@@ -10,7 +10,7 @@ namespace EventsManagement.BusinessLogic.UnitOfWork
         private readonly EventsManagementDbContext _context;
         private readonly IServiceProvider _serviceProvider;
 
-        private IRepository<Event> _eventRepository;
+        private IEventRepository _eventRepository;
         private IRepository<User> _userRepository;
         private IRepository<EventUser> _eventUserRepository;
 
@@ -20,7 +20,7 @@ namespace EventsManagement.BusinessLogic.UnitOfWork
             _serviceProvider = serviceProvider;
         }
 
-        public IRepository<Event> EventRepository => _eventRepository ??= _serviceProvider.GetRequiredService<IRepository<Event>>();
+        public IEventRepository EventRepository => _eventRepository ??= _serviceProvider.GetRequiredService<IEventRepository>();
 
         public IRepository<User> UserRepository => _userRepository ??= _serviceProvider.GetRequiredService<IRepository<User>>();
 

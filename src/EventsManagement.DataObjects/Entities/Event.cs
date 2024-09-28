@@ -12,6 +12,8 @@ namespace EventsManagement.DataObjects.Entities
 
         public DateTime DateAndTime { get; set; }
 
+        public string Venue { get; set; }
+
         public string Category { get; set; }
 
         public int MaxNumberOfParticipants { get; set; }
