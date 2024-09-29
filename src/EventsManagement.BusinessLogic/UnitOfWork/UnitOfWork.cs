@@ -12,7 +12,7 @@ namespace EventsManagement.BusinessLogic.UnitOfWork
 
         private IEventRepository _eventRepository;
         private IRepository<User> _userRepository;
-        private IRepository<EventUser> _eventUserRepository;
+        private IEventUserRepository _eventUserRepository;
 
         public UnitOfWork(EventsManagementDbContext context, IServiceProvider serviceProvider)
         {
@@ -24,7 +24,7 @@ namespace EventsManagement.BusinessLogic.UnitOfWork
 
         public IRepository<User> UserRepository => _userRepository ??= _serviceProvider.GetRequiredService<IRepository<User>>();
 
-        public IRepository<EventUser> EventUserRepository => _eventUserRepository ??= _serviceProvider.GetRequiredService<IRepository<EventUser>>();
+        public IEventUserRepository EventUserRepository => _eventUserRepository ??= _serviceProvider.GetRequiredService<IEventUserRepository>();
 
         public void Dispose()
         {

@@ -1,4 +1,4 @@
-﻿// На неопределённый срок функционал отключен 
+﻿// На неопределённый срок функционал отключен (Реализация перенесена в UnregisterUser)
 //
 // using AutoMapper;
 // using EventsManagement.BusinessLogic.DataTransferObjects;

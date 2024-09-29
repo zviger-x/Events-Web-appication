@@ -3,13 +3,14 @@ using AutoMapper.QueryableExtensions;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
+using EventsManagement.BusinessLogic.Validation.Validators;
 
 namespace EventsManagement.BusinessLogic.Services.EventService
 {
-    internal class EventGetByDateUseCase : BaseUseCase, IGetEventByDateUseCase
+    internal class EventGetByDateUseCase : BaseUseCase<EventDTO>, IGetEventByDateUseCase
     {
-        public EventGetByDateUseCase(IUnitOfWork unitOfWork, IMapper mapper)
-            : base(unitOfWork, mapper)
+        public EventGetByDateUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<EventDTO> validator)
+            : base(unitOfWork, mapper, validator)
         {
         }
 

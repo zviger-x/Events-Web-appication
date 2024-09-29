@@ -20,10 +20,9 @@ namespace EventsManagement.DataAccess.Repositories
             return Context.EventUsers;
         }
 
-        public async Task RegisterUserInEvent(int userId, int eventId, DateTime registrationDate)
+        public async Task RegisterUserInEvent(EventUser eventUser)
         {
-            var newUser = new EventUser() { UserId = userId, EventId = eventId, RegistrationDate = registrationDate };
-            await Create(newUser);
+            await Create(eventUser);
         }
 
         public async Task UnregisterUserInEvent(EventUser eventUser)

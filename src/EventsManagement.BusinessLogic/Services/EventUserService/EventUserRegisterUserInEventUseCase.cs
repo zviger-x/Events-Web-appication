@@ -1,19 +1,25 @@
 ﻿using AutoMapper;
+using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
+using EventsManagement.BusinessLogic.Validation.Validators;
+using EventsManagement.DataObjects.Entities;
 
 namespace EventsManagement.BusinessLogic.Services.EventUserService
 {
-    internal class EventUserRegisterUserInEventUseCase : BaseUseCase, IRegisterUserInEventUseCase
+    internal class EventUserRegisterUserInEventUseCase : BaseUseCase<EventUserDTO>, IRegisterUserInEventUseCase
     {
-        public EventUserRegisterUserInEventUseCase(IUnitOfWork unitOfWork, IMapper mapper)
-            : base(unitOfWork, mapper)
+        public EventUserRegisterUserInEventUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<EventUserDTO> validator)
+            : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async Task RegisterUserInEvent(int userId, int eventId, DateTime registrationDate)
+        public async Task RegisterUserInEvent(EventUserDTO eventUser)
         {
-            await _unitOfWork.EventUserRepository.RegisterUserInEvent(userId, eventId, registrationDate);
+            await _validator.ValidateAndThrowAsync(eventUser);
+
+            var eu = _mapper.Map<EventUser>(eventUser);
+            await _unitOfWork.EventUserRepository.RegisterUserInEvent(eu);
         }
     }
 }

@@ -2,18 +2,24 @@
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
+using EventsManagement.BusinessLogic.Validation.Messages;
+using EventsManagement.BusinessLogic.Validation.Validators;
+using System;
 
 namespace EventsManagement.BusinessLogic.Services.EventService
 {
-    internal class EventGetByNameUseCase : BaseUseCase, IGetEventByNameUseCase
+    internal class EventGetByNameUseCase : BaseUseCase<EventDTO>, IGetEventByNameUseCase
     {
-        public EventGetByNameUseCase(IUnitOfWork unitOfWork, IMapper mapper)
-            : base(unitOfWork, mapper)
+        public EventGetByNameUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<EventDTO> validator)
+            : base(unitOfWork, mapper, validator)
         {
         }
 
         public async Task<EventDTO> GetByName(string name)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name), StandartValidationMessages.ParameterIsNullOrEmpty);
+
             var e = await _unitOfWork.EventRepository.GetByMame(name);
             return _mapper.Map<EventDTO>(e);
         }
