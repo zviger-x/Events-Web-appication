@@ -9,6 +9,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// Removes an entity in the repository.
         /// </summary>
         /// <param name="entity">Entity to remove.</param>
-        Task Delete(T entity);
+        Task DeleteAsync(T entity);
     }
 }

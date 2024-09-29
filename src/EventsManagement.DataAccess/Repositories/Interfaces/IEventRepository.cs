@@ -9,27 +9,27 @@ namespace EventsManagement.DataAccess.Repositories.Interfaces
         /// </summary>
         /// <param name="name">Event name.</param>
         /// <returns>Event.</returns>
-        Task<Event> GetByMame(string name);
+        Task<Event> GetByMameAsync(string name);
 
         /// <summary>
         /// Returns an array of events by date.
         /// </summary>
         /// <param name="date">Event date and time.</param>
         /// <returns>An array of events.</returns>
-        IQueryable<Event> GetByDate(DateTime date);
+        IQueryable<Event> GetByDateAsync(DateTime date);
 
         /// <summary>
         /// Returns an array of events by venue.
         /// </summary>
         /// <param name="venue">Event venue.</param>
         /// <returns>An array of events.</returns>
-        IQueryable<Event> GetByVenue(string venue);
+        IQueryable<Event> GetByVenueAsync(string venue);
 
         /// <summary>
         /// Returns an array of events by category.
         /// </summary>
         /// <param name="category">Event category.</param>
         /// <returns>An array of events.</returns>
-        IQueryable<Event> GetByCategory(string category);
+        IQueryable<Event> GetByCategoryAsync(string category);
     }
 }

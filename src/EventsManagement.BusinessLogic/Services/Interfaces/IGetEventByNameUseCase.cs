@@ -9,6 +9,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// </summary>
         /// <param name="name">Event name.</param>
         /// <returns>Event.</returns>
-        Task<EventDTO> GetByName(string name);
+        Task<EventDTO> GetByNameAsync(string name);
     }
 }

@@ -15,12 +15,12 @@ namespace EventsManagement.BusinessLogic.Services.EventService
         {
         }
 
-        public IQueryable<EventDTO> GetByCategory(string category)
+        public IQueryable<EventDTO> GetByCategoryAsync(string category)
         {
             if (string.IsNullOrEmpty(category))
                 throw new ArgumentNullException(nameof(category), StandartValidationMessages.ParameterIsNullOrEmpty);
 
-            var events = _unitOfWork.EventRepository.GetByCategory(category);
+            var events = _unitOfWork.EventRepository.GetByCategoryAsync(category);
             return events.ProjectTo<EventDTO>(_mapper.ConfigurationProvider);
         }
     }

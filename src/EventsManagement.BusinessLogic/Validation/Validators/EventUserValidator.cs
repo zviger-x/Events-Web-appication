@@ -29,27 +29,27 @@ namespace EventsManagement.BusinessLogic.Validation.Validators
 
         private async Task<bool> IsUserExists(int userId, CancellationToken token)
         {
-            var user = await _unitOfWork.UserRepository.GetById(userId);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             return user != null;
         }
 
 
         private async Task<bool> IsEventExists(int eventId, CancellationToken token)
         {
-            var eventEntity = await _unitOfWork.EventRepository.GetById(eventId);
+            var eventEntity = await _unitOfWork.EventRepository.GetByIdAsync(eventId);
             return eventEntity != null;
         }
 
 
         private async Task<bool> IsEventHasSpace(int eventId, CancellationToken token)
         {
-            var eventEntity = await _unitOfWork.EventRepository.GetById(eventId);
+            var eventEntity = await _unitOfWork.EventRepository.GetByIdAsync(eventId);
             if (eventEntity == null)
             {
                 return false;
             }
 
-            var participantsCount = await _unitOfWork.EventUserRepository.GetUsersOfEvent(eventId).CountAsync(token);
+            var participantsCount = await _unitOfWork.EventUserRepository.GetUsersOfEventAsync(eventId).CountAsync(token);
             return participantsCount < eventEntity.MaxNumberOfParticipants;
         }
     }

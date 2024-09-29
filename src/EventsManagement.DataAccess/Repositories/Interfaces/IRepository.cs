@@ -9,31 +9,36 @@ namespace EventsManagement.DataAccess.Repositories.Interfaces
         /// Creates an entity into the data table.
         /// </summary>
         /// <param name="entity">Entity to create.</param>
-        Task Create(T entity);
+        Task CreateAsync(T entity);
 
         /// <summary>
         /// Updates an entity in the data table.
         /// </summary>
         /// <param name="entity">Entity to update.</param>
-        Task Update(T entity);
+        void Update(T entity);
 
         /// <summary>
         /// Removes an entity in the data table.
         /// </summary>
         /// <param name="entity">Entity to delete.</param>
-        Task Delete(T entity);
+        void Delete(T entity);
 
         /// <summary>
         /// Returns an entity by its id.
         /// </summary>
         /// <param name="id">Entity id.</param>
         /// <returns>Entity.</returns>
-        Task<T> GetById(int id);
+        Task<T> GetByIdAsync(int id);
 
         /// <summary>
         /// Returns an array of all entities in the data table.
         /// </summary>
         /// <returns>An array of all entities in the data table.</returns>
-        IQueryable<T> GetAll();
+        IQueryable<T> GetAllAsync();
+
+        /// <summary>
+        /// Saves all changes made in this context to the database.
+        /// </summary>
+        Task SaveChangesAsync();
     }
 }

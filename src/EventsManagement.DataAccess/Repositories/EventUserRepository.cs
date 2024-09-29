@@ -10,27 +10,27 @@ namespace EventsManagement.DataAccess.Repositories
         {
         }
 
-        public override async Task<EventUser> GetById(int id)
+        public override async Task<EventUser> GetByIdAsync(int id)
         {
             return await Context.FindAsync<EventUser>(id);
         }
 
-        public override IQueryable<EventUser> GetAll()
+        public override IQueryable<EventUser> GetAllAsync()
         {
             return Context.EventUsers;
         }
 
-        public async Task RegisterUserInEvent(EventUser eventUser)
+        public async Task RegisterUserInEventAsync(EventUser eventUser)
         {
-            await Create(eventUser);
+            await CreateAsync(eventUser);
         }
 
-        public async Task UnregisterUserInEvent(EventUser eventUser)
+        public void UnregisterUserInEvent(EventUser eventUser)
         {
-            await Delete(eventUser);
+            Delete(eventUser);
         }
 
-        public IQueryable<EventUser> GetUsersOfEvent(int eventId)
+        public IQueryable<EventUser> GetUsersOfEventAsync(int eventId)
         {
             return Context.EventUsers.Where(a => a.EventId == eventId);
         }

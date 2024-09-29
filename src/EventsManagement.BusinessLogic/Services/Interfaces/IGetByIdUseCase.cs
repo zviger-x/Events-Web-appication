@@ -10,6 +10,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// </summary>
         /// <param name="id">Entity id.</param>
         /// <returns>Entity.</returns>
-        Task<T> GetById(int id);
+        Task<T> GetByIdAsync(int id);
     }
 }

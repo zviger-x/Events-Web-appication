@@ -17,31 +17,34 @@ namespace EventsManagement.DataAccess.Repositories
         protected EventsManagementDbContext Context { get; }
 
         /// <inheritdoc/>
-        public virtual async Task Create(T entity)
+        public virtual async Task CreateAsync(T entity)
         {
             await Context.AddAsync(entity);
-            await Context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public virtual async Task Update(T entity)
+        public virtual void Update(T entity)
         {
             Context.Update(entity);
-            await Context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public virtual async Task Delete(T entity)
+        public virtual void Delete(T entity)
         {
             Context.Remove(entity);
+        }
+
+        /// <inheritdoc/>
+        public virtual async Task SaveChangesAsync()
+        {
             await Context.SaveChangesAsync();
         }
 
         /// <inheritdoc/>
-        public abstract Task<T> GetById(int id);
+        public abstract Task<T> GetByIdAsync(int id);
 
         /// <inheritdoc/>
-        public abstract IQueryable<T> GetAll();
+        public abstract IQueryable<T> GetAllAsync();
 
         protected virtual void Dispose(bool disposing)
         {

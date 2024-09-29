@@ -9,6 +9,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// Creates an entity in the repository.
         /// </summary>
         /// <param name="entity">Entity to create.</param>
-        Task Create(T entity);
+        Task CreateAsync(T entity);
     }
 }

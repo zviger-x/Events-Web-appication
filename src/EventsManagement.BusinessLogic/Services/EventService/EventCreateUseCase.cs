@@ -14,12 +14,13 @@ namespace EventsManagement.BusinessLogic.Services.EventService
         {
         }
 
-        public async Task Create(EventDTO entity)
+        public async Task CreateAsync(EventDTO entity)
         {
             await _validator.ValidateAndThrowAsync(entity);
 
             var e = _mapper.Map<Event>(entity);
-            await _unitOfWork.EventRepository.Create(e);
+            await _unitOfWork.EventRepository.CreateAsync(e);
+            await _unitOfWork.EventRepository.SaveChangesAsync();
         }
     }
 }

@@ -14,12 +14,12 @@ namespace EventsManagement.BusinessLogic.Services.EventService
         {
         }
 
-        public async Task<EventDTO> GetById(int id)
+        public async Task<EventDTO> GetByIdAsync(int id)
         {
             if (id < 0)
                 throw new ArgumentOutOfRangeException(nameof(id), StandartValidationMessages.ParameterIsLessThanZero);
 
-            var e = await _unitOfWork.EventRepository.GetById(id);
+            var e = await _unitOfWork.EventRepository.GetByIdAsync(id);
             return _mapper.Map<EventDTO>(e);
         }
     }

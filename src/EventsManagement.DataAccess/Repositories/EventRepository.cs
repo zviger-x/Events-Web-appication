@@ -11,32 +11,32 @@ namespace EventsManagement.DataAccess.Repositories
         {
         }
 
-        public override async Task<Event> GetById(int id)
+        public override async Task<Event> GetByIdAsync(int id)
         {
             return await Context.FindAsync<Event>(id);
         }
 
-        public override IQueryable<Event> GetAll()
+        public override IQueryable<Event> GetAllAsync()
         {
             return Context.Events;
         }
 
-        public async Task<Event> GetByMame(string name)
+        public async Task<Event> GetByMameAsync(string name)
         {
             return await Context.Events.FirstOrDefaultAsync(e => e.Name == name);
         }
 
-        public IQueryable<Event> GetByDate(DateTime date)
+        public IQueryable<Event> GetByDateAsync(DateTime date)
         {
             return Context.Events.Where(e => e.DateAndTime == date);
         }
 
-        public IQueryable<Event> GetByVenue(string venue)
+        public IQueryable<Event> GetByVenueAsync(string venue)
         {
             return Context.Events.Where(e => e.Venue == venue);
         }
 
-        public IQueryable<Event> GetByCategory(string category)
+        public IQueryable<Event> GetByCategoryAsync(string category)
         {
             return Context.Events.Where(e => e.Category == category);
         }

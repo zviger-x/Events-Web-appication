@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventsManagement.LocalTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventsManagement.DataAccess", "src\EventsManagement.DataAccess\EventsManagement.DataAccess.csproj", "{F61672E1-804A-4824-9195-9BE82DF2E36C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventsManagement.BusinessLogic", "src\EventsManagement.BusinessLogic\EventsManagement.BusinessLogic.csproj", "{BD1258C5-3187-4977-95F4-4906A5403FDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventsManagement.BusinessLogic", "src\EventsManagement.BusinessLogic\EventsManagement.BusinessLogic.csproj", "{BD1258C5-3187-4977-95F4-4906A5403FDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

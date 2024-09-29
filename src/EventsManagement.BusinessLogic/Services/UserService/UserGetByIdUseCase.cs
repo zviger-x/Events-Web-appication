@@ -14,12 +14,12 @@ namespace EventsManagement.BusinessLogic.Services.UserService
         {
         }
 
-        public async Task<UserDTO> GetById(int id)
+        public async Task<UserDTO> GetByIdAsync(int id)
         {
             if (id < 0)
                 throw new ArgumentOutOfRangeException(nameof(id), StandartValidationMessages.ParameterIsLessThanZero);
 
-            var u = await _unitOfWork.UserRepository.GetById(id);
+            var u = await _unitOfWork.UserRepository.GetByIdAsync(id);
             return _mapper.Map<UserDTO>(u);
         }
     }

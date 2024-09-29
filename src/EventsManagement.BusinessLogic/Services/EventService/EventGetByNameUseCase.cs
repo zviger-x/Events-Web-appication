@@ -15,12 +15,12 @@ namespace EventsManagement.BusinessLogic.Services.EventService
         {
         }
 
-        public async Task<EventDTO> GetByName(string name)
+        public async Task<EventDTO> GetByNameAsync(string name)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name), StandartValidationMessages.ParameterIsNullOrEmpty);
 
-            var e = await _unitOfWork.EventRepository.GetByMame(name);
+            var e = await _unitOfWork.EventRepository.GetByMameAsync(name);
             return _mapper.Map<EventDTO>(e);
         }
     }

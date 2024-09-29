@@ -9,6 +9,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// Updates an entity in the repository.
         /// </summary>
         /// <param name="entity">Entity to update.</param>
-        Task Update(T entity);
+        Task UpdateAsync(T entity);
     }
 }

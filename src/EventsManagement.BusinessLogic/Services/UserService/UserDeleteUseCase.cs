@@ -14,12 +14,13 @@ namespace EventsManagement.BusinessLogic.Services.UserService
         {
         }
 
-        public async Task Delete(UserDTO entity)
+        public async Task DeleteAsync(UserDTO entity)
         {
             await _validator.ValidateAndThrowAsync(entity);
 
             var u = _mapper.Map<User>(entity);
-            await _unitOfWork.UserRepository.Delete(u);
+            _unitOfWork.UserRepository.Delete(u);
+            await _unitOfWork.UserRepository.SaveChangesAsync();
         }
     }
 }

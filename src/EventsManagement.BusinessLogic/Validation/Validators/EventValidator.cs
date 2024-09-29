@@ -30,7 +30,7 @@ namespace EventsManagement.BusinessLogic.Validation.Validators
 
         private async Task<bool> IsUniqueName(string name, CancellationToken token)
         {
-            return !await _unitOfWork.EventRepository.GetAll().AnyAsync(e => e.Name == name, token);
+            return !await _unitOfWork.EventRepository.GetAllAsync().AnyAsync(e => e.Name == name, token);
         }
     }
 }

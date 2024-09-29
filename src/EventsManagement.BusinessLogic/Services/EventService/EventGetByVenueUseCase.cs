@@ -15,12 +15,12 @@ namespace EventsManagement.BusinessLogic.Services.EventService
         {
         }
 
-        public IQueryable<EventDTO> GetByVenue(string venue)
+        public IQueryable<EventDTO> GetByVenueAsync(string venue)
         {
             if (string.IsNullOrEmpty(venue))
                 throw new ArgumentNullException(nameof(venue), StandartValidationMessages.ParameterIsNullOrEmpty);
 
-            var events = _unitOfWork.EventRepository.GetByVenue(venue);
+            var events = _unitOfWork.EventRepository.GetByVenueAsync(venue);
             return events.ProjectTo<EventDTO>(_mapper.ConfigurationProvider);
         }
     }

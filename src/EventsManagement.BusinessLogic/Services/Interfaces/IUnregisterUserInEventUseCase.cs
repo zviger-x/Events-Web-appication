@@ -9,6 +9,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// </summary>
         /// <param name="eventUser">User of the event.</param>
         /// <returns></returns>
-        Task UnregisterUserInEvent(EventUserDTO eventUser);
+        Task UnregisterUserInEventAsync(EventUserDTO eventUser);
     }
 }

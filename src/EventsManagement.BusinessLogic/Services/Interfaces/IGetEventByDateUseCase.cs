@@ -9,6 +9,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// </summary>
         /// <param name="date">Event date and time.</param>
         /// <returns>An array of events.</returns>
-        IQueryable<EventDTO> GetByDate(DateTime date);
+        IQueryable<EventDTO> GetByDateAsync(DateTime date);
     }
 }

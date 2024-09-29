@@ -14,9 +14,9 @@ namespace EventsManagement.BusinessLogic.Services.EventService
         {
         }
 
-        public IQueryable<EventDTO> GetByDate(DateTime date)
+        public IQueryable<EventDTO> GetByDateAsync(DateTime date)
         {
-            var events = _unitOfWork.EventRepository.GetByDate(date);
+            var events = _unitOfWork.EventRepository.GetByDateAsync(date);
             return events.ProjectTo<EventDTO>(_mapper.ConfigurationProvider);
         }
     }

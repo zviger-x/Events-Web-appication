@@ -9,20 +9,20 @@ namespace EventsManagement.DataAccess.Repositories.Interfaces
         /// </summary>
         /// <param name="eventUser">User to register.</param>
         /// <returns></returns>
-        Task RegisterUserInEvent(EventUser eventUser);
+        Task RegisterUserInEventAsync(EventUser eventUser);
 
         /// <summary>
         /// Unregisters a user in an event
         /// </summary>
         /// <param name="eventUser">User of the event.</param>
         /// <returns></returns>
-        Task UnregisterUserInEvent(EventUser eventUser);
+        void UnregisterUserInEvent(EventUser eventUser);
 
         /// <summary>
         /// Returns all users of the event.
         /// </summary>
         /// <param name="eventId">Event id</param>
         /// <returns>An array of all user of the event.</returns>
-        IQueryable<EventUser> GetUsersOfEvent(int eventId);
+        IQueryable<EventUser> GetUsersOfEventAsync(int eventId);
     }
 }

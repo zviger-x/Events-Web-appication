@@ -14,9 +14,9 @@ namespace EventsManagement.BusinessLogic.Services.EventService
         {
         }
 
-        public IQueryable<EventDTO> GetAll()
+        public IQueryable<EventDTO> GetAllAsync()
         {
-            var events = _unitOfWork.EventRepository.GetAll();
+            var events = _unitOfWork.EventRepository.GetAllAsync();
             return events.ProjectTo<EventDTO>(_mapper.ConfigurationProvider);
         }
     }

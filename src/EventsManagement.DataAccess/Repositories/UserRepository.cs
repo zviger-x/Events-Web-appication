@@ -9,12 +9,12 @@ namespace EventsManagement.DataAccess.Repositories
         {
         }
 
-        public override async Task<User> GetById(int id)
+        public override async Task<User> GetByIdAsync(int id)
         {
             return await Context.FindAsync<User>(id);
         }
 
-        public override IQueryable<User> GetAll()
+        public override IQueryable<User> GetAllAsync()
         {
             return Context.Users;
         }
