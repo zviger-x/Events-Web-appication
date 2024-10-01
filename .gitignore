@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# My project for local tests
+EventsManagement.LocalTests
+/src/EventsManagement.Database/EventsManagement.Database.publish.xml
+/src/EventsManagement.BusinessLogic/Services/EventUserService/EventUserCreateUseCase.cs
+/src/EventsManagement.BusinessLogic/Services/EventUserService/EventUserDeleteUseCase.cs
