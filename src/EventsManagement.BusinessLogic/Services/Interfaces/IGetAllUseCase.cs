@@ -5,7 +5,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
     internal interface IGetAllUseCase<T>
         where T : IEntityDTO
     {
-
         /// <summary>
         /// Returns an array of all entities in the repository.
         /// </summary>

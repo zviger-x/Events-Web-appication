@@ -1,6 +1,8 @@
 ﻿using EventsManagement.DataAccess.Contexts;
 using EventsManagement.DataAccess.Repositories.Interfaces;
 using EventsManagement.DataObjects.Entities;
+using EventsManagement.DataObjects.Utilities.Interfaces;
+using EventsManagement.DataObjects.Utilities;
 
 namespace EventsManagement.DataAccess.Repositories
 {
@@ -18,6 +20,11 @@ namespace EventsManagement.DataAccess.Repositories
         public override IQueryable<EventUser> GetAll()
         {
             return Context.EventUsers;
+        }
+
+        public override async Task<IPaginatedList<EventUser>> GetPaginatedListAsync(int pageIndex, int pageSize)
+        {
+            return await PaginatedList<EventUser>.CreateAsync(Context.EventUsers, pageIndex, pageSize);
         }
 
         public async Task RegisterUserInEventAsync(EventUser eventUser)

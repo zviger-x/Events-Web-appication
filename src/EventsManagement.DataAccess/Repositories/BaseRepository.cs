@@ -1,6 +1,7 @@
 ﻿using EventsManagement.DataAccess.Contexts;
 using EventsManagement.DataAccess.Repositories.Interfaces;
 using EventsManagement.DataObjects.Entities.Interfaces;
+using EventsManagement.DataObjects.Utilities.Interfaces;
 
 namespace EventsManagement.DataAccess.Repositories
 {
@@ -45,6 +46,9 @@ namespace EventsManagement.DataAccess.Repositories
 
         /// <inheritdoc/>
         public abstract IQueryable<T> GetAll();
+
+        /// <inheritdoc/>
+        public abstract Task<IPaginatedList<T>> GetPaginatedListAsync(int pageIndex, int pageSize);
 
         protected virtual void Dispose(bool disposing)
         {

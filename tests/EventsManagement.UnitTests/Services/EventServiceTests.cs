@@ -25,6 +25,7 @@ namespace EventsManagement.UnitTests.Services
         private EventUpdateUseCase _eventUpdateUseCase;
         private EventDeleteUseCase _eventDeleteUseCase;
         private EventGetAllUseCase _eventGetAllUseCase;
+        private EventGetPaginatedListUseCase _eventGetPaginatedListUseCase;
         private EventGetByCategoryUseCase _eventGetByCategoryUseCase;
         private EventGetByDateUseCase _eventGetByDateUseCase;
         private EventGetByIdUseCase _eventGetByIdUseCase;
@@ -52,6 +53,7 @@ namespace EventsManagement.UnitTests.Services
             _eventUpdateUseCase = new EventUpdateUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
             _eventDeleteUseCase = new EventDeleteUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
             _eventGetAllUseCase = new EventGetAllUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
+            _eventGetPaginatedListUseCase = new EventGetPaginatedListUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
             _eventGetByCategoryUseCase = new EventGetByCategoryUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
             _eventGetByDateUseCase = new EventGetByDateUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
             _eventGetByIdUseCase = new EventGetByIdUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
@@ -166,6 +168,41 @@ namespace EventsManagement.UnitTests.Services
             // Assert
             _unitOfWorkMock.Verify(uow => uow.EventRepository.GetAll(), Times.Once);
             ClassicAssert.AreEqual(eventDTOs.Count(), result.Count());
+        }
+        
+        [Test]
+        public async Task GetPaginatedListAsync_ShouldReturnPaginatedList()
+        {
+            // Arrange
+            var pageIndex = 2;
+            var pageSize = 2;
+            var eventEntities = new List<Event>
+            {
+                new Event { Id = 1, Name = "Event 1" },
+                new Event { Id = 2, Name = "Event 2" }, 
+                new Event { Id = 3, Name = "Event 3" },  // Should
+                new Event { Id = 4, Name = "Event 4" }   // return
+            }.AsQueryable().BuildMock();
+
+            var eventDTOs = new List<EventDTO>
+            {
+                new EventDTO { Id = 3, Name = "Event 3" },
+                new EventDTO { Id = 4, Name = "Event 4" }
+            }.AsQueryable();
+
+            _mapperMock.Setup(m => m.ProjectTo<EventDTO>(eventEntities, null)).Returns(eventDTOs);
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
+
+            // Act
+            var result = await _eventGetPaginatedListUseCase.GetPaginatedListAsync(pageIndex, pageSize);
+
+            // Assert
+            _unitOfWorkMock.Verify(uow => uow.EventRepository.GetAll(), Times.Once);
+            ClassicAssert.IsTrue(eventDTOs.First().Id == result.Items.First().Id);
+            ClassicAssert.AreEqual(eventDTOs.Count(), result.Items.Count);
+            ClassicAssert.AreEqual(eventEntities.Count(), result.TotalCount);
+            ClassicAssert.AreEqual(pageIndex, result.PageIndex);
+            ClassicAssert.AreEqual(pageSize, result.PageSize);
         }
 
         [Test]
@@ -387,6 +424,27 @@ namespace EventsManagement.UnitTests.Services
         public async Task EventGetByIdUseCase_ShouldThrowArgumentOutOfRangeException(int id)
         {
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _eventGetByIdUseCase.GetByIdAsync(id));
+        }
+
+        [Test]
+        public async Task GetPaginatedListAsync_ShouldReturnEmpty_WhenPageIndexIsTooHigh()
+        {
+            // Arrange
+            var pageIndex = 10;
+            var pageSize = 2;
+            var eventEntities = new List<Event>().AsQueryable().BuildMock();
+
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
+
+            // Act
+            var result = await _eventGetPaginatedListUseCase.GetPaginatedListAsync(pageIndex, pageSize);
+
+            // Assert
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(0, result.Items.Count);
+            ClassicAssert.AreEqual(0, result.TotalCount);
+            ClassicAssert.AreEqual(pageIndex, result.PageIndex);
+            ClassicAssert.AreEqual(pageSize, result.PageSize);
         }
         #endregion
     }

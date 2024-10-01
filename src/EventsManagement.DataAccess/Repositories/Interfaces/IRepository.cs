@@ -1,4 +1,5 @@
 ﻿using EventsManagement.DataObjects.Entities.Interfaces;
+using EventsManagement.DataObjects.Utilities.Interfaces;
 
 namespace EventsManagement.DataAccess.Repositories.Interfaces
 {
@@ -35,6 +36,14 @@ namespace EventsManagement.DataAccess.Repositories.Interfaces
         /// </summary>
         /// <returns>An array of all entities in the data table.</returns>
         IQueryable<T> GetAll();
+
+        /// <summary>
+        /// Returns a paginated list of elements
+        /// </summary>
+        /// <param name="pageIndex">Page index</param>
+        /// <param name="pageSize">Page size</param>
+        /// <returns></returns>
+        Task<IPaginatedList<T>> GetPaginatedListAsync(int pageIndex, int pageSize);
 
         /// <summary>
         /// Saves all changes made in this context to the database.
