@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\EventsManagement.BusinessLogic\EventsManagement.BusinessLogic.csproj" />
+    <ProjectReference Include="..\..\src\EventsManagement.BusinessLogic\EventsManagement.BusinessLogic.csproj" />
   </ItemGroup>
 
 </Project>
