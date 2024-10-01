@@ -15,7 +15,7 @@ namespace EventsManagement.DataAccess.Repositories
             return await Context.FindAsync<EventUser>(id);
         }
 
-        public override IQueryable<EventUser> GetAllAsync()
+        public override IQueryable<EventUser> GetAll()
         {
             return Context.EventUsers;
         }
@@ -30,7 +30,7 @@ namespace EventsManagement.DataAccess.Repositories
             Delete(eventUser);
         }
 
-        public IQueryable<EventUser> GetUsersOfEventAsync(int eventId)
+        public IQueryable<EventUser> GetUsersOfEvent(int eventId)
         {
             return Context.EventUsers.Where(a => a.EventId == eventId);
         }

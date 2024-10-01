@@ -14,9 +14,9 @@ namespace EventsManagement.BusinessLogic.Services.UserService
         {
         }
 
-        public IQueryable<UserDTO> GetAllAsync()
+        public IQueryable<UserDTO> GetAll()
         {
-            var users = _unitOfWork.UserRepository.GetAllAsync();
+            var users = _unitOfWork.UserRepository.GetAll();
             return users.ProjectTo<UserDTO>(_mapper.ConfigurationProvider);
         }
     }

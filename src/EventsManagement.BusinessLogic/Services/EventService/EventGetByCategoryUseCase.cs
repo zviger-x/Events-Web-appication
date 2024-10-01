@@ -4,23 +4,23 @@ using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Messages;
-using EventsManagement.BusinessLogic.Validation.Validators;
+using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 
 namespace EventsManagement.BusinessLogic.Services.EventService
 {
     internal class EventGetByCategoryUseCase : BaseUseCase<EventDTO>, IGetEventByCategoryUseCase
     {
-        public EventGetByCategoryUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<EventDTO> validator)
+        public EventGetByCategoryUseCase(IUnitOfWork unitOfWork, IMapper mapper, IBaseValidator<EventDTO> validator)
             : base(unitOfWork, mapper, validator)
         {
         }
 
-        public IQueryable<EventDTO> GetByCategoryAsync(string category)
+        public IQueryable<EventDTO> GetByCategory(string category)
         {
             if (string.IsNullOrEmpty(category))
                 throw new ArgumentNullException(nameof(category), StandartValidationMessages.ParameterIsNullOrEmpty);
 
-            var events = _unitOfWork.EventRepository.GetByCategoryAsync(category);
+            var events = _unitOfWork.EventRepository.GetByCategory(category);
             return events.ProjectTo<EventDTO>(_mapper.ConfigurationProvider);
         }
     }

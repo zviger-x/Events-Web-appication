@@ -20,8 +20,12 @@ namespace EventsManagement.DataAccess.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            var connectionString = ConfigurationManager.ConnectionStrings["DB"].ConnectionString;
-            optionsBuilder.UseSqlServer(connectionString);
+
+            if (!optionsBuilder.IsConfigured)
+            {
+                var connectionString = ConfigurationManager.ConnectionStrings["DB"].ConnectionString;
+                optionsBuilder.UseSqlServer(connectionString);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

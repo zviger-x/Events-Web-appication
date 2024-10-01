@@ -9,6 +9,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// </summary>
         /// <param name="eventId">Event id</param>
         /// <returns>An array of all user of the event.</returns>
-        IQueryable<EventUserDTO> GetUsersOfEventAsync(int eventId);
+        IQueryable<EventUserDTO> GetUsersOfEvent(int eventId);
     }
 }

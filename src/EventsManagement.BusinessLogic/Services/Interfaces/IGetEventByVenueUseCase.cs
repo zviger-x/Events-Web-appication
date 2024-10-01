@@ -9,6 +9,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// </summary>
         /// <param name="venue">Event venue.</param>
         /// <returns>An array of events.</returns>
-        IQueryable<EventDTO> GetByVenueAsync(string venue);
+        IQueryable<EventDTO> GetByVenue(string venue);
     }
 }

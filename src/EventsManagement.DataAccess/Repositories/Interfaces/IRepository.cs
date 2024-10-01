@@ -34,7 +34,7 @@ namespace EventsManagement.DataAccess.Repositories.Interfaces
         /// Returns an array of all entities in the data table.
         /// </summary>
         /// <returns>An array of all entities in the data table.</returns>
-        IQueryable<T> GetAllAsync();
+        IQueryable<T> GetAll();
 
         /// <summary>
         /// Saves all changes made in this context to the database.

@@ -15,12 +15,12 @@ namespace EventsManagement.BusinessLogic.Services.EventUserService
         {
         }
 
-        public IQueryable<EventUserDTO> GetUsersOfEventAsync(int eventId)
+        public IQueryable<EventUserDTO> GetUsersOfEvent(int eventId)
         {
             if (eventId < 0)
                 throw new ArgumentOutOfRangeException(nameof(eventId), StandartValidationMessages.ParameterIsLessThanZero);
 
-            var users = _unitOfWork.EventUserRepository.GetUsersOfEventAsync(eventId);
+            var users = _unitOfWork.EventUserRepository.GetUsersOfEvent(eventId);
             return users.ProjectTo<EventUserDTO>(_mapper.ConfigurationProvider);
         }
     }

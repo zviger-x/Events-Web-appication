@@ -3,13 +3,13 @@ using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Messages;
-using EventsManagement.BusinessLogic.Validation.Validators;
+using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 
 namespace EventsManagement.BusinessLogic.Services.EventService
 {
     internal class EventGetByIdUseCase : BaseUseCase<EventDTO>, IGetByIdUseCase<EventDTO>
     {
-        public EventGetByIdUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<EventDTO> validator)
+        public EventGetByIdUseCase(IUnitOfWork unitOfWork, IMapper mapper, IBaseValidator<EventDTO> validator)
             : base(unitOfWork, mapper, validator)
         {
         }

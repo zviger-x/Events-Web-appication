@@ -21,6 +21,10 @@ namespace EventsManagement.BusinessLogic.Validation.Validators
                 .NotNull().WithMessage(EventValidationMessages.DescriptionNotNull)
                 .NotEmpty().WithMessage(EventValidationMessages.DescriptionNotEmpty);
 
+            RuleFor(e => e.Category)
+                .NotNull().WithMessage(EventValidationMessages.DescriptionNotNull)
+                .NotEmpty().WithMessage(EventValidationMessages.DescriptionNotEmpty);
+
             RuleFor(e => e.DateAndTime)
                 .NotNull().WithMessage(EventValidationMessages.DateAndTimeNotNull);
 
@@ -30,7 +34,7 @@ namespace EventsManagement.BusinessLogic.Validation.Validators
 
         private async Task<bool> IsUniqueName(string name, CancellationToken token)
         {
-            return !await _unitOfWork.EventRepository.GetAllAsync().AnyAsync(e => e.Name == name, token);
+            return !await _unitOfWork.EventRepository.GetAll().AnyAsync(e => e.Name == name, token);
         }
     }
 }

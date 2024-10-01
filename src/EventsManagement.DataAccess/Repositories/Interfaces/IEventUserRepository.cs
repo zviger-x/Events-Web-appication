@@ -23,6 +23,6 @@ namespace EventsManagement.DataAccess.Repositories.Interfaces
         /// </summary>
         /// <param name="eventId">Event id</param>
         /// <returns>An array of all user of the event.</returns>
-        IQueryable<EventUser> GetUsersOfEventAsync(int eventId);
+        IQueryable<EventUser> GetUsersOfEvent(int eventId);
     }
 }

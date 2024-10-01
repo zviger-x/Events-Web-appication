@@ -44,7 +44,7 @@ namespace EventsManagement.DataAccess.Repositories
         public abstract Task<T> GetByIdAsync(int id);
 
         /// <inheritdoc/>
-        public abstract IQueryable<T> GetAllAsync();
+        public abstract IQueryable<T> GetAll();
 
         protected virtual void Dispose(bool disposing)
         {

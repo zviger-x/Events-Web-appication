@@ -14,7 +14,7 @@ namespace EventsManagement.DataAccess.Repositories
             return await Context.FindAsync<User>(id);
         }
 
-        public override IQueryable<User> GetAllAsync()
+        public override IQueryable<User> GetAll()
         {
             return Context.Users;
         }

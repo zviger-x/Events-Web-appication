@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
-using EventsManagement.BusinessLogic.Validation.Validators;
+using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 
 namespace EventsManagement.BusinessLogic.Services
 {
@@ -10,9 +10,9 @@ namespace EventsManagement.BusinessLogic.Services
     {
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly IMapper _mapper;
-        protected readonly BaseValidator<T> _validator;
+        protected readonly IBaseValidator<T> _validator;
 
-        protected BaseUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<T> validator)
+        protected BaseUseCase(IUnitOfWork unitOfWork, IMapper mapper, IBaseValidator<T> validator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

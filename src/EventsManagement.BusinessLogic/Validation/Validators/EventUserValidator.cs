@@ -49,7 +49,7 @@ namespace EventsManagement.BusinessLogic.Validation.Validators
                 return false;
             }
 
-            var participantsCount = await _unitOfWork.EventUserRepository.GetUsersOfEventAsync(eventId).CountAsync(token);
+            var participantsCount = await _unitOfWork.EventUserRepository.GetUsersOfEvent(eventId).CountAsync(token);
             return participantsCount < eventEntity.MaxNumberOfParticipants;
         }
     }

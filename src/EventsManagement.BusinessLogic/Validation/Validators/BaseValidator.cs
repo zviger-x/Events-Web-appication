@@ -1,10 +1,12 @@
-﻿using EventsManagement.BusinessLogic.DataTransferObjects.Interfaces;
+﻿using EventsManagement.BusinessLogic.DataTransferObjects;
+using EventsManagement.BusinessLogic.DataTransferObjects.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
+using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using FluentValidation;
 
 namespace EventsManagement.BusinessLogic.Validation.Validators
 {
-    internal class BaseValidator<T> : AbstractValidator<T>
+    internal class BaseValidator<T> : AbstractValidator<T>, IBaseValidator<T>
         where T : IEntityDTO
     {
         protected readonly IUnitOfWork _unitOfWork;
