@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IGetEventByDateUseCase
+    public interface IGetEventByDateUseCase
     {
         /// <summary>
         /// Returns an array of events by date.

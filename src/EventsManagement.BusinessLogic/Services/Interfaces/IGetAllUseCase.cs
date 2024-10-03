@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IGetAllUseCase<T>
+    public interface IGetAllUseCase<T>
         where T : IEntityDTO
     {
         /// <summary>

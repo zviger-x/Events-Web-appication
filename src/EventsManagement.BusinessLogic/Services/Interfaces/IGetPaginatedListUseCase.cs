@@ -3,7 +3,7 @@ using EventsManagement.DataObjects.Utilities.Interfaces;
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IGetPaginatedListUseCase<T>
+    public interface IGetPaginatedListUseCase<T>
         where T : IEntityDTO
     {
         /// <summary>

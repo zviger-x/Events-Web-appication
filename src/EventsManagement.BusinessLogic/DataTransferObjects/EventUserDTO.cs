@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.DataTransferObjects
 {
-    internal class EventUserDTO : IEntityDTO
+    public class EventUserDTO : IEntityDTO
     {
         public int Id { get; set; }
 

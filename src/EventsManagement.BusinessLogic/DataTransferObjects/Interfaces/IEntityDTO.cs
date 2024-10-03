@@ -1,6 +1,6 @@
 ﻿namespace EventsManagement.BusinessLogic.DataTransferObjects.Interfaces
 {
-    internal interface IEntityDTO
+    public interface IEntityDTO
     {
         int Id { get; }
     }

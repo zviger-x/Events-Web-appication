@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IGetEventByVenueUseCase
+    public interface IGetEventByVenueUseCase
     {
         /// <summary>
         /// Returns an array of events by venue.
