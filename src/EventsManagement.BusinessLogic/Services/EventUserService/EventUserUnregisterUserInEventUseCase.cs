@@ -2,14 +2,14 @@
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
-using EventsManagement.BusinessLogic.Validation.Validators;
+using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataObjects.Entities;
 
 namespace EventsManagement.BusinessLogic.Services.EventUserService
 {
     internal class EventUserUnregisterUserInEventUseCase : BaseUseCase<EventUserDTO>, IUnregisterUserInEventUseCase
     {
-        public EventUserUnregisterUserInEventUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<EventUserDTO> validator)
+        public EventUserUnregisterUserInEventUseCase(IUnitOfWork unitOfWork, IMapper mapper, IBaseValidator<EventUserDTO> validator)
             : base(unitOfWork, mapper, validator)
         {
         }

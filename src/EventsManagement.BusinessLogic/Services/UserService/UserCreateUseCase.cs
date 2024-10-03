@@ -2,14 +2,14 @@
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
-using EventsManagement.BusinessLogic.Validation.Validators;
+using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataObjects.Entities;
 
 namespace EventsManagement.BusinessLogic.Services.UserService
 {
     internal class UserCreateUseCase : BaseUseCase<UserDTO>, ICreateUseCase<UserDTO>
     {
-        public UserCreateUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<UserDTO> validator)
+        public UserCreateUseCase(IUnitOfWork unitOfWork, IMapper mapper, IBaseValidator<UserDTO> validator)
             : base(unitOfWork, mapper, validator)
         {
         }
