@@ -3,13 +3,13 @@ using AutoMapper.QueryableExtensions;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
-using EventsManagement.BusinessLogic.Validation.Validators;
+using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 
 namespace EventsManagement.BusinessLogic.Services.EventUserService
 {
     internal class EventUserGetAllUseCase : BaseUseCase<EventUserDTO>, IGetAllUseCase<EventUserDTO>
     {
-        public EventUserGetAllUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<EventUserDTO> validator)
+        public EventUserGetAllUseCase(IUnitOfWork unitOfWork, IMapper mapper, IBaseValidator<EventUserDTO> validator)
             : base(unitOfWork, mapper, validator)
         {
         }
