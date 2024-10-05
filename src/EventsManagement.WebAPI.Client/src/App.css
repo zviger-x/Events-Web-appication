@@ -1,11 +1,25 @@
-﻿#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+﻿body {
+    background-color: #404650 !important;
 }
 
-th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
+h1
+{
+    color: ghostwhite;
+}
+
+.container-style {
+    margin-top: 7em;
+}
+
+.app-tab-container {
+    padding: 20px 150px;
+    min-height: 50px;
+    background-color: #525a66;
+}
+
+.table-upper-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }

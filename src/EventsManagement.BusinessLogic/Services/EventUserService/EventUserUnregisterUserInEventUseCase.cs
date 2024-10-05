@@ -16,7 +16,8 @@ namespace EventsManagement.BusinessLogic.Services.EventUserService
 
         public async Task UnregisterUserInEventAsync(EventUserDTO eventUser)
         {
-            await _validator.ValidateAndThrowAsync(eventUser);
+            // Главное, чтобы id совпадал
+            // await _validator.ValidateAndThrowAsync(eventUser);
 
             var eu = _mapper.Map<EventUser>(eventUser);
             _unitOfWork.EventUserRepository.UnregisterUserInEvent(eu);

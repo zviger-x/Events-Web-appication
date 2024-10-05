@@ -16,7 +16,8 @@ namespace EventsManagement.BusinessLogic.Services.UserService
 
         public async Task DeleteAsync(UserDTO entity)
         {
-            await _validator.ValidateAndThrowAsync(entity);
+            // Главное, чтобы id совпадал
+            // await _validator.ValidateAndThrowAsync(entity);
 
             var u = _mapper.Map<User>(entity);
             _unitOfWork.UserRepository.Delete(u);

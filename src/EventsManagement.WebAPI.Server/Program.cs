@@ -22,18 +22,24 @@ namespace EventsManagement.WebAPI.Server
             var builder = WebApplication.CreateBuilder(args);
             var services = builder.Services;
 
-            // Add services to the container.
             var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DB"].ConnectionString;
             services.AddDbContext<EventsManagementDbContext>(options => options.UseSqlServer(connectionString));
             services.AddAutoMapper(typeof(MappingProfile));
             ScopesConfigurator.AddScopes(services);
 
             services.AddControllers();
-            services.AddEndpointsApiExplorer(); // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
                 // c.ResolveConflictingActions(apiDesc => apiDesc.First());
             });
+
+            services.AddCors(c => c.AddPolicy("CorsPolicy", policyBuilder =>
+            {
+                policyBuilder.AllowAnyHeader();
+                policyBuilder.AllowAnyMethod();
+                policyBuilder.WithOrigins(@"https://localhost:5173");
+            }));
 
             var app = builder.Build();
 
@@ -47,12 +53,10 @@ namespace EventsManagement.WebAPI.Server
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
-
             app.MapFallbackToFile("/index.html");
 
             app.Run();
