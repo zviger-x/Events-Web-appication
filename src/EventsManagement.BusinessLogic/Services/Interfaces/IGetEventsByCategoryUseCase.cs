@@ -2,13 +2,13 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    public interface IGetEventByVenueUseCase
+    public interface IGetEventsByCategoryUseCase
     {
         /// <summary>
-        /// Returns an array of events by venue.
+        /// Returns an array of events by category.
         /// </summary>
-        /// <param name="venue">Event venue.</param>
+        /// <param name="category">Event category.</param>
         /// <returns>An array of events.</returns>
-        IQueryable<EventDTO> GetByVenue(string venue);
+        Task<IEnumerable<EventDTO>> GetByCategoryAsync(string category);
     }
 }

@@ -9,6 +9,6 @@ namespace EventsManagement.BusinessLogic.Services.Interfaces
         /// Returns an array of all entities in the repository.
         /// </summary>
         /// <returns>An array of all entities in the repository.</returns>
-        IQueryable<T> GetAll();
+        Task<IEnumerable<T>> GetAllAsync();
     }
 }

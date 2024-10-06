@@ -2,13 +2,13 @@
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.DataObjects.Entities;
 
-namespace EventsManagement.BusinessLogic
+namespace EventsManagement.BusinessLogic.AutoMapping
 {
     internal class MappingProfile : Profile
     {
         public MappingProfile()
         {
-            CreateMap<Event, EventDTO>();
+            CreateMap<Event, EventDTO>().AfterMap<EventUserCounterMappingAction>();
             CreateMap<EventDTO, Event>();
 
             CreateMap<EventUser, EventUserDTO>();

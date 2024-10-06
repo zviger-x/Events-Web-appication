@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.BusinessLogic.Services.EventUserService
 {
@@ -14,10 +14,11 @@ namespace EventsManagement.BusinessLogic.Services.EventUserService
         {
         }
 
-        public IQueryable<EventUserDTO> GetAll()
+        public async Task<IEnumerable<EventUserDTO>> GetAllAsync()
         {
-            var eventUsers = _unitOfWork.EventUserRepository.GetAll();
-            return eventUsers.ProjectTo<EventUserDTO>(_mapper.ConfigurationProvider);
+            var eventUsers = await _unitOfWork.EventUserRepository.GetAll().ToListAsync();
+            var eventUsersDTOs = _mapper.Map<IEnumerable<EventUserDTO>>(eventUsers);
+            return eventUsersDTOs;
         }
     }
 }
