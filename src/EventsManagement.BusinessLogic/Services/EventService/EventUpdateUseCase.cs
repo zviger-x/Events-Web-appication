@@ -16,6 +16,8 @@ namespace EventsManagement.BusinessLogic.Services.EventService
 
         public async Task UpdateAsync(EventDTO entity)
         {
+            entity.IsUpdate = true;
+
             await _validator.ValidateAndThrowAsync(entity);
 
             var e = _mapper.Map<Event>(entity);

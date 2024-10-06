@@ -21,5 +21,7 @@ namespace EventsManagement.BusinessLogic.DataTransferObjects
         public int MaxNumberOfParticipants { get; set; }
 
         public byte[]? Image { get; set; }
+
+        public bool IsUpdate { get; set; }
     }
 }

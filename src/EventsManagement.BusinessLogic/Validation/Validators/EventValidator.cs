@@ -32,9 +32,16 @@ namespace EventsManagement.BusinessLogic.Validation.Validators
                 .GreaterThan(0).WithMessage(EventValidationMessages.MaxParticipantsGreaterThanZero);
         }
 
-        private async Task<bool> IsUniqueName(string name, CancellationToken token)
+        private async Task<bool> IsUniqueName(EventDTO @event, string name, CancellationToken token)
         {
-            return !await _unitOfWork.EventRepository.GetAll().AnyAsync(e => e.Name == name, token);
+            if (@event.IsUpdate)
+            {
+                return !await _unitOfWork.EventRepository.GetAll()
+                    .AnyAsync(e => e.Name == name && e.Id != @event.Id, token);
+            }
+
+            return !await _unitOfWork.EventRepository.GetAll()
+                .AnyAsync(e => e.Name == name, token);
         }
     }
 }
