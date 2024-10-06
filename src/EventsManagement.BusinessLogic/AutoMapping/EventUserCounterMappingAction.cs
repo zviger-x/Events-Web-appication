@@ -16,10 +16,8 @@ namespace EventsManagement.BusinessLogic.AutoMapping
     
         public void Process(Event source, EventDTO destination, ResolutionContext context)
         {
-            Console.WriteLine($"Mapping Event Id: {source.Id}");
-    
             var eventUsers = _getUsersOfEventUseCase.GetUsersOfEvent(source.Id).ToList();
-    
+
             destination.CurrentNumberOfParticipants = eventUsers.Count;
         }
     }

@@ -3,6 +3,10 @@ label {
     font-size: 18px !important;
 }
 
+textarea {
+    min-height: fit-content;
+}
+
 .event-info-container {
     display: flex;
     justify-content: space-between;
@@ -12,6 +16,7 @@ label {
 
 .event-image {
     text-align: center;
+    margin: 0px 0px 25px 0px;
 }
 
     .event-image img {

@@ -22,5 +22,10 @@ namespace EventsManagement.BusinessLogic.Services.UserService
             var usersDTOs = users.ProjectTo<UserDTO>(_mapper.ConfigurationProvider);
             return await PaginatedList<UserDTO>.CreateAsync(usersDTOs, pageIndex, pageSize);
         }
+
+        public async Task<IPaginatedList<UserDTO>> GetPaginatedListAsync(IEnumerable<UserDTO> entities, int pageIndex, int pageSize)
+        {
+            return await PaginatedList<UserDTO>.CreateAsync(entities, pageIndex, pageSize);
+        }
     }
 }

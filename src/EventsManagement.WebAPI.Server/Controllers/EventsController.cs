@@ -1,6 +1,5 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
-using EventsManagement.DataObjects.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventsManagement.WebAPI.Server.Controllers
@@ -9,6 +8,8 @@ namespace EventsManagement.WebAPI.Server.Controllers
     [Route("api/[controller]")]
     public class EventsController : Controller
     {
+        private const int PageSize = 4;
+
         private readonly ICreateUseCase<EventDTO> _eventCreateUseCase;
         private readonly IDeleteUseCase<EventDTO> _eventDeleteUseCase;
         private readonly IUpdateUseCase<EventDTO> _eventUpdateUseCase;
@@ -47,11 +48,45 @@ namespace EventsManagement.WebAPI.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<EventDTO>>> GetAll()
+        public async Task<ActionResult<List<EventDTO>>> GetAll(
+            [FromQuery] string? sortby = null,
+            [FromQuery] string? value = null,
+            [FromQuery] string? page = null)
         {
-            var events = await _eventGetAllUseCase.GetAllAsync();
+            if (string.IsNullOrEmpty(sortby) || string.IsNullOrEmpty(value))
+            {
+                if (!int.TryParse(page, out int pn))
+                    return Ok(await _eventGetAllUseCase.GetAllAsync());
 
-            return Ok(events);
+                return (await _eventGetPaginatedListUseCase.GetPaginatedListAsync(pn, PageSize)).Items;
+            }
+
+            IEnumerable<EventDTO> events;
+            switch (sortby)
+            {
+                case SortValues.Name:
+                    var evt = await _eventGetByNameUseCase.GetByNameAsync(value);
+                    return Ok(new List<EventDTO> { evt });
+                case SortValues.Category:
+                    events = await _eventGetByCategoryUseCase.GetByCategoryAsync(value);
+                    break;
+                case SortValues.Venue:
+                    events = await _eventGetByVenueUseCase.GetByVenueAsync(value);
+                    break;
+                case SortValues.Date:
+                    if (!DateTime.TryParse(value, out DateTime date))
+                        return Ok(await _eventGetAllUseCase.GetAllAsync());
+                    events = await _eventGetByDateUseCase.GetByDateAsync(date);
+                    break;
+                default:
+                    return Ok(await _eventGetAllUseCase.GetAllAsync());
+            }
+
+            if (!int.TryParse(page, out int pageNum))
+                return Ok(events);
+
+            var paginatedEvents = await _eventGetPaginatedListUseCase.GetPaginatedListAsync(events, pageNum, PageSize);
+            return Ok(paginatedEvents.Items);
         }
 
         [HttpGet("{id}")]
@@ -63,7 +98,6 @@ namespace EventsManagement.WebAPI.Server.Controllers
         }
 
         [HttpPost]
-        // [ValidateAntiForgeryToken]
         public async Task<ActionResult<EventDTO>> Create([FromBody] EventDTO @event)
         {
             try
@@ -79,7 +113,6 @@ namespace EventsManagement.WebAPI.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        // [ValidateAntiForgeryToken]
         public async Task<ActionResult<EventDTO>> Edit(int id, [FromBody] EventDTO @event)
         {
             if (id != @event.Id)
@@ -100,12 +133,19 @@ namespace EventsManagement.WebAPI.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        // [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             await _eventDeleteUseCase.DeleteAsync(new EventDTO() { Id = id });
 
             return Ok();
+        }
+
+        private static class SortValues
+        {
+            public const string Name = "name";
+            public const string Category = "category";
+            public const string Venue = "venue";
+            public const string Date = "date";
         }
     }
 }

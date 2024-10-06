@@ -40,12 +40,12 @@ namespace EventsManagement.DataAccess.Repositories
 
         public IQueryable<Event> GetByVenue(string venue)
         {
-            return Context.Events.Where(e => e.Venue == venue);
+            return Context.Events.Where(e => e.Venue.Contains(venue));
         }
 
         public IQueryable<Event> GetByCategory(string category)
         {
-            return Context.Events.Where(e => e.Category == category);
+            return Context.Events.Where(e => e.Category.Contains(category));
         }
     }
 }

@@ -5,8 +5,13 @@ import { API_BASE_URL } from "../../config"
 import axios, { AxiosResponse } from "axios";
 
 const APIConnector = {
-    GetEvents: async (): Promise<EventDTO[]> => {
-        const response: AxiosResponse<GetEventsResponse> = await axios.get(`${API_BASE_URL}/api/events`);
+    GetEvents: async (sortBy?: string, value?: string, page?: string): Promise<EventDTO[]> => {
+        const params = new URLSearchParams();
+        if (sortBy) params.append('sortby', sortBy);
+        if (value) params.append('value', value);
+        if (page) params.append('page', page);
+
+        const response: AxiosResponse<GetEventsResponse> = await axios.get(`${API_BASE_URL}/api/events?${params.toString()}`);
         const events = response.data;
         return events;
     },

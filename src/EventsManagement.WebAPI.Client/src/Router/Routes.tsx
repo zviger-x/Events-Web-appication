@@ -12,6 +12,7 @@ export const Routes: RouteObject[] = [
         element: <App />,
         children: [
             { path: '*', element: <EventsTable /> },
+            { path: 'events', element: <EventsTable /> },
             { path: 'event/create', element: <EventCreateForm /> },
             { path: 'event/:id', element: <EventDetailsForm /> },
             { path: 'event/:id/edit', element: <EventEditForm /> },

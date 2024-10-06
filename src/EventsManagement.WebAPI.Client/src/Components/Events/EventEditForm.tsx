@@ -181,7 +181,7 @@ export default function EventEditForm() {
                                     name="description"
                                     value={event.description}
                                     onChange={handleInputChange}
-                                    rows={4}
+                                    rows={3}
                                 />
                                 {errors.description && <div style={{ color: 'red' }}>{errors.description}</div>}
                             </Form.Field>

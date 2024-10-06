@@ -4,7 +4,7 @@ import { EventDTO } from "../../Models/Events/EventDTO";
 import APIConnector from "../../API/APIConnector";
 import { Button, Form, Segment } from "semantic-ui-react";
 import noImg from "../../assets/no_img.jpg";
-import "./EventEdit.css";
+import "./EventCreate.css";
 
 export default function EventCreateForm() {
     const navigate = useNavigate();
@@ -143,7 +143,7 @@ export default function EventCreateForm() {
                                     name="description"
                                     value={event.description}
                                     onChange={handleInputChange}
-                                    rows={4}
+                                    rows={3}
                                 />
                                 {errors.description && <div style={{ color: 'red' }}>{errors.description}</div>}
                             </Form.Field>
