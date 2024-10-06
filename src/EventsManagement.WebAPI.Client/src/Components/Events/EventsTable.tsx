@@ -7,7 +7,7 @@ import { NavLink } from "react-router-dom";
 
 export default function EventsTable() {
 
-    const [events, setEvents] = useState<EventDTO[]>([]);
+    const [events, setEvents] = useState<EventDTO[]>();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -18,12 +18,24 @@ export default function EventsTable() {
         fetchData();
     }, []);
 
+    if (!events) {
+        return <h1 className="load-text">Loading...</h1>;
+    }
+
+    if (events.length == 0) {
+        return (
+            <h1 className="load-text no-events-info-container">No events
+                <Button as={NavLink} to="event/create" type="button" content="Create event" positive />
+            </h1>
+        );
+    }
+
     return (
         <>
             <Container className="container-style">
                 <div className="table-upper-name">
                     <h1 style={{margin: '0'}}>Events table</h1>
-                    <Button as={NavLink} to="createEvent" floated="right" type="button" content="Create event" positive />
+                    <Button as={NavLink} to="event/create" floated="right" type="button" content="Create event" positive />
                 </div>
                 <table className="ui table">
                     <thead style={{ textAlign: 'center' }}>

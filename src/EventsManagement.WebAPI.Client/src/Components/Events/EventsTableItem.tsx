@@ -25,19 +25,17 @@ export default function EventsTableItem({ event }: Props) {
 
     return (
         <tr className="center aligned">
-            <td data-label="Name">{event.name}</td>
-            <td data-label="Description">{event.description}</td>
+            <td data-label="Name" className="overflow-wrap">{event.name}</td>
+            <td data-label="Description" className="overflow-wrap">{event.description}</td>
             <td data-label="DateAndTime">{`${formattedTime}, ${formattedDate}`}</td>
-            <td data-label="Venue">{event.venue}</td>
-            <td data-label="Category">{event.category}</td>
+            <td data-label="Venue" className="overflow-wrap">{event.venue}</td>
+            <td data-label="Category" className="overflow-wrap">{event.category}</td>
             <td data-label="Participants">{event.currentNumberOfParticipants}/{event.maxNumberOfParticipants}</td>
             <td data-label="Image">
                 {imageSrc && <img src={imageSrc} alt="Event" style={{ maxHeight: '100px' }} />}
             </td>
             <td data-label="Action">
                 <Button as={NavLink} to={`event/${event.id}`} color="blue" type="submit">Details</Button>
-                <Button as={NavLink} to={`editEvent/${event.id}`} color="yellow" type="submit">Edit</Button>
-                <Button as={NavLink} to={`deleteEvent/${event.id}`} color="red" type="submit">Delete</Button>
             </td>
         </tr>
     )

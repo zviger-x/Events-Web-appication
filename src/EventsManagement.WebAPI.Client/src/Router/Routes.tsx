@@ -1,7 +1,10 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import App from "../App";
-import EventsForm from "../Components/Events/EventsForm";
 import EventsTable from "../Components/Events/EventsTable";
+import EventCreateForm from "../Components/Events/EventCreateForm";
+import EventDetailsForm from "../Components/Events/EventDetailsForm";
+import EventEditForm from "../Components/Events/EventEditForm";
+import EventDeleteForm from "../Components/Events/EventDeleteForm";
 
 export const Routes: RouteObject[] = [
     {
@@ -9,10 +12,10 @@ export const Routes: RouteObject[] = [
         element: <App />,
         children: [
             { path: '*', element: <EventsTable /> },
-            { path: 'createEvent', element: <EventsForm key='create' /> },
-            { path: 'event/:id', element: <EventsForm key='details' /> },
-            { path: 'editEvent/:id', element: <EventsForm key='edit' /> },
-            { path: 'deleteEvent/:id', element: <EventsForm key='delete' /> },
+            { path: 'event/create', element: <EventCreateForm /> },
+            { path: 'event/:id', element: <EventDetailsForm /> },
+            { path: 'event/:id/edit', element: <EventEditForm /> },
+            { path: 'event/:id/delete', element: <EventDeleteForm /> },
         ]
     }
 ]

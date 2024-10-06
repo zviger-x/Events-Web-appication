@@ -1,5 +1,6 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.DataObjects.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventsManagement.WebAPI.Server.Controllers
@@ -81,6 +82,11 @@ namespace EventsManagement.WebAPI.Server.Controllers
         // [ValidateAntiForgeryToken]
         public async Task<ActionResult<EventDTO>> Edit(int id, [FromBody] EventDTO @event)
         {
+            if (id != @event.Id)
+            {
+                return NotFound();
+            }
+
             try
             {
                 await _eventUpdateUseCase.UpdateAsync(@event);
