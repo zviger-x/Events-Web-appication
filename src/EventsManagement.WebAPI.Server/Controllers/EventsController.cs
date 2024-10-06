@@ -66,7 +66,10 @@ namespace EventsManagement.WebAPI.Server.Controllers
             {
                 case SortValues.Name:
                     var evt = await _eventGetByNameUseCase.GetByNameAsync(value);
-                    return Ok(new List<EventDTO> { evt });
+                    var list = new  List<EventDTO>();
+                    if (evt != null)
+                        list.Add(evt);
+                    return Ok(list);
                 case SortValues.Category:
                     events = await _eventGetByCategoryUseCase.GetByCategoryAsync(value);
                     break;
@@ -75,7 +78,7 @@ namespace EventsManagement.WebAPI.Server.Controllers
                     break;
                 case SortValues.Date:
                     if (!DateTime.TryParse(value, out DateTime date))
-                        return Ok(await _eventGetAllUseCase.GetAllAsync());
+                        return Ok(new List<EventDTO>());
                     events = await _eventGetByDateUseCase.GetByDateAsync(date);
                     break;
                 default:

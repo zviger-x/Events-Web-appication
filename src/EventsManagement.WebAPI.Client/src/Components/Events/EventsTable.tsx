@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { EventDTO } from "../../Models/Events/EventDTO";
 import APIConnector from "../../API/APIConnector";
-import { Button, Container } from "semantic-ui-react";
+import { Button, Container, Dropdown, Form } from "semantic-ui-react";
 import EventsTableItem from "./EventsTableItem";
 import { NavLink, useSearchParams } from "react-router-dom";
 import "./EventsTable.css";
@@ -9,14 +9,15 @@ import "./EventsTable.css";
 export default function EventsTable() {
     const [events, setEvents] = useState<EventDTO[]>();
     const [searchParams, setSearchParams] = useSearchParams();
+    const [selectedSort, setSelectedSort] = useState<string | undefined>();
+    const [filterValue, setFilterValue] = useState<string | undefined>();
 
     const sortBy = searchParams.get("sortBy") || undefined;
     const value = searchParams.get("value") || undefined;
     const page = searchParams.get("page") || "1";
 
     useEffect(() => {
-        if (parseInt(page) <= 0)
-            handlePageChange(1);
+        if (parseInt(page) <= 0) handlePageChange(1);
 
         const fetchData = async () => {
             const fetchedEvents = await APIConnector.GetEvents(sortBy, value, page);
@@ -32,18 +33,13 @@ export default function EventsTable() {
         const fetchedEvents = await APIConnector.GetEvents(sortBy, value, newPage.toString());
         if (fetchedEvents.length > 0) {
             const params = new URLSearchParams(searchParams.toString());
-            
-            if (newPage) {
-                params.set("page", newPage.toString());
-            } else {
-                params.delete("page");
-            }
 
+            params.set("page", newPage.toString());
             setSearchParams(params);
         }
     };
 
-    const handleSortChange = (sortBy: string, value: string) => {
+    const handleSortChange = (sortBy?: string, value?: string) => {
         const params = new URLSearchParams(searchParams.toString());
 
         if (sortBy) {
@@ -61,6 +57,10 @@ export default function EventsTable() {
         setSearchParams(params);
     };
 
+    const handleApplyFilter = () => {
+        handleSortChange(selectedSort || undefined, filterValue || undefined);
+    };
+
     if (!events) {
         return <h1 className="load-text">Loading...</h1>;
     }
@@ -70,8 +70,40 @@ export default function EventsTable() {
             <Container className="container-style">
                 <div className="table-upper-name">
                     <h1 style={{ margin: '0' }}>Events table</h1>
-                    <Button as={NavLink} to="event/create" floated="right" type="button" content="Create event" positive />
                 </div>
+
+                <Form className="filters" style={{ padding: '15px 0px 0px 0px' }}>
+                    <div className="container">
+                        <Form.Field style={{ padding: '0px 10px 0px 0px' }}>
+                            <label>Sort by</label>
+                            <Dropdown
+                                placeholder='Sort by'
+                                selection
+                                options={[
+                                    { key: 'none', text: 'None', value: undefined },
+                                    { key: 'name', text: 'Name', value: 'name' },
+                                    { key: 'category', text: 'Category', value: 'category' },
+                                    { key: 'venue', text: 'Venue', value: 'venue' },
+                                    { key: 'date', text: 'Date', value: 'date' },
+                                ]}
+                                onChange={(e, { value }) => setSelectedSort(value as string)}
+                            />
+                        </Form.Field>
+                        <Form.Field style={{ padding: '0px 10px 0px 0px' }}>
+                            <label>Filter</label>
+                            <input
+                                type="text"
+                                placeholder="Filter value"
+                                onChange={(e) => setFilterValue(e.target.value)}
+                            />
+                        </Form.Field>
+
+                    </div>
+                    <Button onClick={handleApplyFilter}>Apply filter</Button>
+                </Form>
+
+                <Button as={NavLink} to="event/create" floated="right" type="button" content="Create event" positive style={{margin: '0px 0px 15px 0px'}} />
+
                 <table className="ui table">
                     <thead style={{ textAlign: 'center' }}>
                         <tr>
@@ -86,7 +118,7 @@ export default function EventsTable() {
                         </tr>
                     </thead>
                     <tbody>
-                        {events.map((event, index) => (
+                        {events.length > 0 && events.map((event, index) => (
                             <EventsTableItem key={index} event={event} />
                         ))}
                     </tbody>

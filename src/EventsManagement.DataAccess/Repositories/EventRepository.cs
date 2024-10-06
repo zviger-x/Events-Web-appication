@@ -35,7 +35,7 @@ namespace EventsManagement.DataAccess.Repositories
 
         public IQueryable<Event> GetByDate(DateTime date)
         {
-            return Context.Events.Where(e => e.DateAndTime == date);
+            return Context.Events.Where(e => e.DateAndTime.Date == date.Date);
         }
 
         public IQueryable<Event> GetByVenue(string venue)
