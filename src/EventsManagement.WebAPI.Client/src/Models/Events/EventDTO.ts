@@ -1,11 +1,11 @@
 export interface EventDTO {
-    id: number,
+    id: number | undefined,
     name: string,
     description: string,
-    dateAndTime: string,
+    dateAndTime: string | undefined,
     venue: string,
     category: string,
-    currentParticipants: number,
+    currentNumberOfParticipants: number,
     maxNumberOfParticipants: number,
     image: string | null,
 }

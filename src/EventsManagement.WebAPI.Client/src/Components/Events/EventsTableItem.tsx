@@ -1,14 +1,14 @@
 import { Button } from "semantic-ui-react";
 import { EventDTO } from "../../Models/Events/EventDTO";
-import APIConnector from "../../API/APIConnector";
 import noImg from "../../assets/no_img.jpg";
+import { NavLink } from "react-router-dom";
 
 interface Props {
     event: EventDTO;
 }
 
 export default function EventsTableItem({ event }: Props) {
-    const eventDate = new Date(event.dateAndTime);
+    const eventDate = new Date(event.dateAndTime!);
 
     const formattedTime = eventDate.toLocaleTimeString('ru-RU', {
         hour: '2-digit',
@@ -30,13 +30,14 @@ export default function EventsTableItem({ event }: Props) {
             <td data-label="DateAndTime">{`${formattedTime}, ${formattedDate}`}</td>
             <td data-label="Venue">{event.venue}</td>
             <td data-label="Category">{event.category}</td>
-            <td data-label="Participants">{event.currentParticipants}/{event.maxNumberOfParticipants}</td>
+            <td data-label="Participants">{event.currentNumberOfParticipants}/{event.maxNumberOfParticipants}</td>
             <td data-label="Image">
                 {imageSrc && <img src={imageSrc} alt="Event" style={{ maxHeight: '100px' }} />}
             </td>
             <td data-label="Action">
-                <Button color="yellow" type="submit">Edit</Button>
-                <Button type="button" negative onClick={async () => { APIConnector.DeleteEvent(event.id); /* window.location.reload();*/ }}>Delete</Button>
+                <Button as={NavLink} to={`event/${event.id}`} color="blue" type="submit">Details</Button>
+                <Button as={NavLink} to={`editEvent/${event.id}`} color="yellow" type="submit">Edit</Button>
+                <Button as={NavLink} to={`deleteEvent/${event.id}`} color="red" type="submit">Delete</Button>
             </td>
         </tr>
     )

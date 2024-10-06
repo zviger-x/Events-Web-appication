@@ -1,7 +1,6 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.WebAPI.Server.Controllers
 {
@@ -15,10 +14,11 @@ namespace EventsManagement.WebAPI.Server.Controllers
         private readonly IGetByIdUseCase<EventDTO> _eventGetByIdUseCase;
         private readonly IGetAllUseCase<EventDTO> _eventGetAllUseCase;
         private readonly IGetPaginatedListUseCase<EventDTO> _eventGetPaginatedListUseCase;
-        private readonly IGetEventByCategoryUseCase _eventGetByCategoryUseCase;
-        private readonly IGetEventByDateUseCase _eventGetByDateUseCase;
+        private readonly IGetEventsByCategoryUseCase _eventGetByCategoryUseCase;
+        private readonly IGetEventsByDateUseCase _eventGetByDateUseCase;
         private readonly IGetEventByNameUseCase _eventGetByNameUseCase;
-        private readonly IGetEventByVenueUseCase _eventGetByVenueUseCase;
+        private readonly IGetEventsByVenueUseCase _eventGetByVenueUseCase;
+        private readonly IGetUsersOfEventUseCase _getUsersOfEventUseCase;
 
         public EventsController(ICreateUseCase<EventDTO> eventCreateUseCase,
             IDeleteUseCase<EventDTO> eventDeleteUseCase,
@@ -26,10 +26,11 @@ namespace EventsManagement.WebAPI.Server.Controllers
             IGetByIdUseCase<EventDTO> eventGetByIdUseCase,
             IGetAllUseCase<EventDTO> eventGetAllUseCase,
             IGetPaginatedListUseCase<EventDTO> eventGetPaginatedListUseCase,
-            IGetEventByCategoryUseCase eventGetByCategoryUseCase,
-            IGetEventByDateUseCase eventGetByDateUseCase,
+            IGetEventsByCategoryUseCase eventGetByCategoryUseCase,
+            IGetEventsByDateUseCase eventGetByDateUseCase,
             IGetEventByNameUseCase eventGetByNameUseCase,
-            IGetEventByVenueUseCase eventGetByVenueUseCase)
+            IGetEventsByVenueUseCase eventGetByVenueUseCase,
+            IGetUsersOfEventUseCase getUsersOfEventUseCase)
         {
             _eventCreateUseCase = eventCreateUseCase;
             _eventDeleteUseCase = eventDeleteUseCase;
@@ -41,13 +42,23 @@ namespace EventsManagement.WebAPI.Server.Controllers
             _eventGetByDateUseCase = eventGetByDateUseCase;
             _eventGetByNameUseCase = eventGetByNameUseCase;
             _eventGetByVenueUseCase = eventGetByVenueUseCase;
+            _getUsersOfEventUseCase = getUsersOfEventUseCase;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<EventDTO>>> GetAll()
         {
-            var events = await _eventGetAllUseCase.GetAll().ToListAsync();
+            var events = await _eventGetAllUseCase.GetAllAsync();
+
             return Ok(events);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<EventDTO>> GetById(int id)
+        {
+            var @event = await _eventGetByIdUseCase.GetByIdAsync(id);
+
+            return Ok(@event);
         }
 
         [HttpPost]
@@ -70,11 +81,6 @@ namespace EventsManagement.WebAPI.Server.Controllers
         // [ValidateAntiForgeryToken]
         public async Task<ActionResult<EventDTO>> Edit(int id, [FromBody] EventDTO @event)
         {
-            if (id != @event.Id)
-            {
-                return NotFound();
-            }
-
             try
             {
                 await _eventUpdateUseCase.UpdateAsync(@event);

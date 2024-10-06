@@ -1,4 +1,4 @@
-using EventsManagement.BusinessLogic;
+using EventsManagement.BusinessLogic.AutoMapping;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.EventService;
 using EventsManagement.BusinessLogic.Services.EventUserService;
@@ -24,8 +24,10 @@ namespace EventsManagement.WebAPI.Server
 
             var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DB"].ConnectionString;
             services.AddDbContext<EventsManagementDbContext>(options => options.UseSqlServer(connectionString));
-            services.AddAutoMapper(typeof(MappingProfile));
             ScopesConfigurator.AddScopes(services);
+
+            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddScoped<EventUserCounterMappingAction>();
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();
@@ -107,10 +109,10 @@ namespace EventsManagement.WebAPI.Server
             services.AddScoped<IGetAllUseCase<EventDTO>, EventGetAllUseCase>();
             services.AddScoped<IGetPaginatedListUseCase<EventDTO>, EventGetPaginatedListUseCase>();
             services.AddScoped<IGetByIdUseCase<EventDTO>, EventGetByIdUseCase>();
-            services.AddScoped<IGetEventByCategoryUseCase, EventGetByCategoryUseCase>();
-            services.AddScoped<IGetEventByDateUseCase, EventGetByDateUseCase>();
+            services.AddScoped<IGetEventsByCategoryUseCase, EventGetByCategoryUseCase>();
+            services.AddScoped<IGetEventsByDateUseCase, EventGetByDateUseCase>();
             services.AddScoped<IGetEventByNameUseCase, EventGetByNameUseCase>();
-            services.AddScoped<IGetEventByVenueUseCase, EventGetByVenueUseCase>();
+            services.AddScoped<IGetEventsByVenueUseCase, EventGetByVenueUseCase>();
         }
 
         private static void AddEventUserScopes(IServiceCollection services)

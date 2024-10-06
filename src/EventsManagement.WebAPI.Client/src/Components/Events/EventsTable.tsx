@@ -3,6 +3,7 @@ import { EventDTO } from "../../Models/Events/EventDTO"
 import APIConnector from "../../API/APIConnector";
 import { Button, Container } from "semantic-ui-react";
 import EventsTableItem from "./EventsTableItem";
+import { NavLink } from "react-router-dom";
 
 export default function EventsTable() {
 
@@ -22,7 +23,7 @@ export default function EventsTable() {
             <Container className="container-style">
                 <div className="table-upper-name">
                     <h1 style={{margin: '0'}}>Events table</h1>
-                    <Button floated="right" type="button" content="Create event" positive />
+                    <Button as={NavLink} to="createEvent" floated="right" type="button" content="Create event" positive />
                 </div>
                 <table className="ui table">
                     <thead style={{ textAlign: 'center' }}>
@@ -34,7 +35,7 @@ export default function EventsTable() {
                             <th>Category</th>
                             <th>Participants</th>
                             <th>Image</th>
-                            <th style={{minWidth: '200px'}}></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

@@ -1,8 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import 'semantic-ui-css/semantic.min.css';
-import App from './App';
 import './App.css'
+import { RouterProvider } from 'react-router';
+import { Router } from './Router/Routes';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
@@ -11,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
                 Events management application
             </h1>
         </div>
-        <App />
+        <RouterProvider router={ Router } />
         <div style={{margin: '150px', minHeight: '150px' }} />
     </StrictMode>,
 )

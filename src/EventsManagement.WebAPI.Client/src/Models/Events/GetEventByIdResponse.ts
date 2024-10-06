@@ -1,5 +1,3 @@
 import { EventDTO } from "./EventDTO";
 
-export interface GetEventByIdResponse {
-    Event: EventDTO;
-}
+export type GetEventsResponse = EventDTO;
