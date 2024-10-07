@@ -39,7 +39,7 @@ export default function EventEditForm() {
         if (event) {
             const { name, value } = e.target;
             setEvent({ ...event, [name]: value });
-            setErrors({ ...errors, [name]: '' }); // Remove errors on change
+            setErrors({ }); // Remove errors on change
         }
     };
 
@@ -58,7 +58,7 @@ export default function EventEditForm() {
         }
     };
 
-    const validate = (): boolean => {
+    const validate = async (): Promise<boolean> => {
         const newErrors: { [key: string]: string } = {};
         if (!event.name) newErrors.name = "Name is required.";
         if (!event.venue) newErrors.venue = "Venue is required.";
@@ -67,16 +67,15 @@ export default function EventEditForm() {
         if (!event.description) newErrors.description = "Description is required.";
         if (event.maxNumberOfParticipants <= 0) newErrors.maxNumberOfParticipants = "Max number of participants must be greater than 0.";
 
-        // I'll add this later
-        // 
         // Check for duplicate event name
-        // if (event?.name) {
-        //     const existingEvents = await APIConnector.GetEventsByName(event.name);
-        //     const isDuplicate = existingEvents.some((existingEvent) => existingEvent.id !== event.id);
-        //     if (isDuplicate) {
-        //         newErrors.name = "An event with this name already exists.";
-        //     }
-        // }
+        if (event?.name) {
+            const existingEvents = await APIConnector.GetEvents("name", event.name);
+            const isDuplicate = existingEvents.some((existingEvent) => existingEvent.id !== event.id);
+            if (isDuplicate) {
+                newErrors.name = "An event with this name already exists.";
+                newErrors.nameDuplicate = "An event with this name already exists.";
+            }
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -84,7 +83,7 @@ export default function EventEditForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (validate()) {
+        if (await validate()) {
             if (event) {
                 console.log(event);
                 await APIConnector.EditEvent(event);
@@ -129,6 +128,7 @@ export default function EventEditForm() {
                                     error={!!errors.name}
                                     placeholder={errors.name || ''}
                                 />
+                                {errors.nameDuplicate && <div style={{ color: 'red' }}>{errors.nameDuplicate}</div>}
                             </Form.Field>
                             <Form.Field style={{ flex: '1 1 45%' }}>
                                 <label>Category</label>
@@ -157,7 +157,7 @@ export default function EventEditForm() {
                                 <Form.Input
                                     type="datetime-local"
                                     name="dateAndTime"
-                                    value={event.dateAndTime}
+                                    value={event.dateAndTime ? new Date(event.dateAndTime).toISOString().slice(0, 16) : ''}
                                     onChange={handleInputChange}
                                     error={!!errors.dateAndTime}
                                     placeholder={errors.dateAndTime || ''}
