@@ -83,6 +83,31 @@ const APIConnector = {
         const events = response.data;
         return events;
     },
+
+    RegisterForEvent: async (userId: string, eventId: string): Promise<void> => {
+        const params = new URLSearchParams();
+        if (userId) params.append('userId', userId);
+        if (eventId) params.append('eventId', eventId);
+
+        await axiosInstance.post<void>(`${API_BASE_URL}/api/account/RegisterForEvent?${params.toString()}`);
+    },
+
+    UnregisterFromEvent: async (userId: string, eventId: string): Promise<void> => {
+        const params = new URLSearchParams();
+        if (userId) params.append('userId', userId);
+        if (eventId) params.append('eventId', eventId);
+
+        await axiosInstance.post<void>(`${API_BASE_URL}/api/account/UnregisterFromEvent?${params.toString()}`);
+    },
+
+    IsUserRegisteredForEvent: async (userId: string, eventId: string): Promise<boolean> => {
+        const params = new URLSearchParams();
+        if (userId) params.append('userId', userId);
+        if (eventId) params.append('eventId', eventId);
+
+        const response = await axiosInstance.get<boolean>(`${API_BASE_URL}/api/account/IsUserRegisteredForEvent?${params.toString()}`);
+        return response.data;
+    },
 }
 
 export default APIConnector;

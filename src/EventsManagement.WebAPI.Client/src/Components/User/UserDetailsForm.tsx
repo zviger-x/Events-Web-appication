@@ -13,7 +13,7 @@ export default function UserDetailsForm() {
     const userRole = String(TH.GetUserRole(TH.ParseToken(TH.GetToken()!)));
     const { id } = useParams();
     const [user, setUser] = useState<UserDTO>();
-    const [events, setEvents] = useState<EventDTO[]>([]);
+    const [events, setEvents] = useState<EventDTO[]>();
 
     useEffect(() => {
         if (id) {
@@ -23,7 +23,6 @@ export default function UserDetailsForm() {
 
                 const fetchedEvents = await APIConnector.GetUserEvents(parseInt(id));
                 setEvents(fetchedEvents);
-                console.log(fetchedEvents);
             }
 
             fetchData();
@@ -76,28 +75,30 @@ export default function UserDetailsForm() {
                     )}
                     <Button as={NavLink} to='/' floated='right' type='button' content='Back' />
                 </div>
-                <div className="user-events">
-                    <h1>Events you are a participant in:</h1>
-                    <table className="ui table">
-                        <thead style={{ textAlign: 'center' }}>
-                            <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Date and time</th>
-                                <th>Venue</th>
-                                <th>Category</th>
-                                <th>Participants</th>
-                                <th>Image</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {events.length > 0 && events.map((event, index) => (
-                                <EventsTableItem key={index} event={event} />
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                {(events && events?.length > 0) && (
+                    <div className="user-events">
+                        <h1>Events you are a participant in:</h1>
+                        <table className="ui table">
+                            <thead style={{ textAlign: 'center' }}>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Date and time</th>
+                                    <th>Venue</th>
+                                    <th>Category</th>
+                                    <th>Participants</th>
+                                    <th>Image</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {events.length > 0 && events.map((event, index) => (
+                                    <EventsTableItem key={index} event={event} />
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </Segment>
         </div>
     );

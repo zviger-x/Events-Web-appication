@@ -31,5 +31,21 @@ namespace EventsManagement.DataAccess.Repositories.Interfaces
         /// <param name="userId">User id</param>
         /// <returns>An array of all events of the user.</returns>
         IQueryable<EventUser> GetEventsOfUser(int userId);
+
+        /// <summary>
+        /// Returns true if the user is registered for the event. 
+        /// </summary>
+        /// <param name="userId">User id</param>
+        /// <param name="eventId">Event id</param>
+        /// <returns>Returns true if the user is registered for the event.</returns>
+        Task<bool> IsUserRegisteredAsync(int userId, int eventId);
+
+        /// <summary>
+        /// Returns EventUser by userId and eventId.
+        /// </summary>
+        /// <param name="userId">User id</param>
+        /// <param name="eventId">Event id</param>
+        /// <returns>Returns EventUser by userId and eventId.</returns>
+        Task<EventUser> GetByUserIdAndEventId(int userId, int eventId);
     }
 }

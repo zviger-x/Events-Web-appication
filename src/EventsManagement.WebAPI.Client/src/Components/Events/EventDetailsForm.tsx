@@ -1,27 +1,33 @@
 import { useEffect, useState } from "react";
-import { useParams, NavLink } from "react-router-dom";
+import { useParams, NavLink, useNavigate } from "react-router-dom";
 import { EventDTO } from "../../Models/Events/EventDTO";
 import APIConnector from "../../API/APIConnector";
 import { Button, Segment } from "semantic-ui-react";
 import noImg from "../../assets/no_img.jpg";
 import "./EventDetails.css";
-import TH from "../../API/TokenHandler"
+import TH from "../../API/TokenHandler";
 import UserRoles from "../../Models/Users/UserRoles";
 
 export default function EventsDetailsForm() {
-    const userRole = String(TH.GetUserRole(TH.ParseToken(TH.GetToken()!)));
+    const userRole = TH.GetUserRole(TH.ParseToken(TH.GetToken()!));
     const { id } = useParams();
     const [event, setEvent] = useState<EventDTO>();
+    const [isRegistered, setIsRegistered] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (id) {
-            const fetchData = async () => {
+        const fetchData = async () => {
+            if (id) {
                 const fetchedEvent = await APIConnector.GetEventById(parseInt(id));
                 setEvent(fetchedEvent);
-            }
 
-            fetchData();
-        }
+                const userId = TH.GetUserId(TH.ParseToken(TH.GetToken()!));
+                const registered = await APIConnector.IsUserRegisteredForEvent(userId, id);
+                setIsRegistered(registered);
+            }
+        };
+
+        fetchData();
     }, [id]);
 
     if (!event) {
@@ -41,8 +47,20 @@ export default function EventsDetailsForm() {
 
     const imageSrc = event.image ? `data:image;base64,${event.image}` : noImg;
 
+    const handleRegister = async () => {
+        const userId = TH.GetUserId(TH.ParseToken(TH.GetToken()!));
+        await APIConnector.RegisterForEvent(userId, id!);
+        navigate(`/account/${userId}`);
+    };
+
+    const handleUnregister = async () => {
+        const userId = TH.GetUserId(TH.ParseToken(TH.GetToken()!));
+        await APIConnector.UnregisterFromEvent(userId, id!);
+        navigate(`/account/${userId}`);
+    };
+
     return (
-        <div style={{ display: 'flex', justifyContent: 'center' }} >
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Segment className="form-container" style={{ display: 'inline-block', width: 'auto' }}>
                 <div className="event-info-container">
                     <div className="event-image">
@@ -89,6 +107,11 @@ export default function EventsDetailsForm() {
                             <Button as={NavLink} to={`edit`} floated='right' color="yellow" type="submit">Edit</Button>
                         </>
                     )}
+                    {userRole && (isRegistered ? (
+                        <Button floated='right' color="orange" onClick={handleUnregister}>Unregister from event</Button>
+                    ) : (
+                        <Button floated='right' color="green" onClick={handleRegister}>Register to event</Button>
+                    ))}
                     <Button as={NavLink} to='/' floated='right' type='button' content='Back' />
                 </div>
             </Segment>

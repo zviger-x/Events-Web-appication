@@ -1,11 +1,10 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.EventService;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.WebAPI.Server;
-using IdentityServer4.Hosting.LocalApiAuthentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -20,6 +19,10 @@ public class AccountController : ControllerBase
     private readonly IGetUserByEmailUseCase _getUserByEmailUseCase;
     private readonly IGetEventsOfUserUseCase _getEventsOfUserUseCase;
     private readonly IVerifyUserPasswordUseCase _userVerifyPasswordUseCase;
+    private readonly IEventUserCheckRegistrationUseCase _eventUserCheckRegistrationUseCase;
+    private readonly IEventUserGetByUserIdAndEventIdUseCase _eventUserGetByUserIdAndEventIdUseCase;
+    private readonly IRegisterUserInEventUseCase _registerUserInEventUseCase;
+    private readonly IUnregisterUserInEventUseCase _unregisterUserInEventUseCase;
     private readonly string _secretKey;
     private readonly string _issuer;
     private readonly string _audience;
@@ -29,7 +32,11 @@ public class AccountController : ControllerBase
         IGetByIdUseCase<UserDTO> getUserByIdUseCase,
         IGetUserByEmailUseCase getUserByEmailUseCase,
         IGetEventsOfUserUseCase getEventsOfUserUseCase,
-        IVerifyUserPasswordUseCase userVerifyPasswordUseCase)
+        IVerifyUserPasswordUseCase userVerifyPasswordUseCase,
+        IEventUserCheckRegistrationUseCase eventUserCheckRegistrationUseCase,
+        IEventUserGetByUserIdAndEventIdUseCase eventUserGetByUserIdAndEventIdUseCase,
+        IRegisterUserInEventUseCase registerUserInEventUseCase,
+        IUnregisterUserInEventUseCase unregisterUserInEventUseCase)
     {
         _createUserUseCase = createUserUseCase;
         _updateUserUseCase = updateUserUseCase;
@@ -37,6 +44,10 @@ public class AccountController : ControllerBase
         _getUserByEmailUseCase = getUserByEmailUseCase;
         _getEventsOfUserUseCase = getEventsOfUserUseCase;
         _userVerifyPasswordUseCase = userVerifyPasswordUseCase;
+        _eventUserCheckRegistrationUseCase = eventUserCheckRegistrationUseCase;
+        _eventUserGetByUserIdAndEventIdUseCase = eventUserGetByUserIdAndEventIdUseCase;
+        _registerUserInEventUseCase = registerUserInEventUseCase;
+        _unregisterUserInEventUseCase = unregisterUserInEventUseCase;
         _secretKey = JwtSettings.SecretKey;
         _issuer = JwtSettings.Issuer;
         _audience = JwtSettings.Audience;
@@ -121,6 +132,68 @@ public class AccountController : ControllerBase
         var user = _getEventsOfUserUseCase.GetEventsOfUser(id);
 
         return Ok(user);
+    }
+
+    [HttpGet("IsUserRegisteredForEvent")]
+    public async Task<IActionResult> IsUserRegisteredForEvent(
+        [FromQuery] int? userId,
+        [FromQuery] int? eventId)
+    {
+        if (userId is null || eventId is null)
+            return BadRequest("Id cannot be null");
+
+        var isRegistered = await _eventUserCheckRegistrationUseCase.IsUserRegisteredAsync(userId.Value, eventId.Value);
+
+        return Ok(isRegistered);
+    }
+
+    [HttpPost("RegisterForEvent")]
+    public async Task<IActionResult> RegisterForEvent(
+        [FromQuery] int? userId,
+        [FromQuery] int? eventId)
+    {
+        if (userId is null)
+            return BadRequest("User id cannot be null");
+        if (eventId is null)
+            return BadRequest("Event id cannot be null");
+
+        var isRegistered = await _eventUserCheckRegistrationUseCase.IsUserRegisteredAsync(userId.Value, eventId.Value);
+    
+        if (isRegistered)
+        {
+            return BadRequest("User is already registered for this event.");
+        }
+    
+        var eventUser = new EventUserDTO
+        {
+            UserId = userId.Value,
+            EventId = eventId.Value,
+            RegistrationDate = DateTime.UtcNow
+        };
+    
+        await _registerUserInEventUseCase.RegisterUserInEventAsync(eventUser);
+        return Ok("User registered for the event successfully.");
+    }
+
+    [HttpPost("UnregisterFromEvent")]
+    public async Task<IActionResult> UnregisterFromEvent(
+        [FromQuery] int? userId,
+        [FromQuery] int? eventId)
+    {
+        if (userId is null)
+            return BadRequest("User id cannot be null");
+        if (eventId is null)
+            return BadRequest("Event id cannot be null");
+
+        var eventUser = await _eventUserGetByUserIdAndEventIdUseCase.GetByUserIdAndEventId(userId.Value, eventId.Value);
+        if (eventUser == null)
+        {
+            return NotFound("User is not registered for this event.");
+        }
+
+        await _unregisterUserInEventUseCase.UnregisterUserInEventAsync(new EventUserDTO() { Id = eventUser.Id });
+
+        return Ok("User unregistered from the event successfully.");
     }
 
     private string GenerateTokenAsync(UserDTO user)

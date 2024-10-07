@@ -1,9 +1,7 @@
 using EventsManagement.BusinessLogic.AutoMapping;
 using EventsManagement.DataAccess.Contexts;
-using EventsManagement.DataObjects.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;

@@ -71,6 +71,8 @@ namespace EventsManagement.WebAPI.Server
             services.AddScoped<IGetEventsOfUserUseCase, EventUserGetEventsOfUserUseCase>();
             services.AddScoped<IRegisterUserInEventUseCase, EventUserRegisterUserInEventUseCase>();
             services.AddScoped<IUnregisterUserInEventUseCase, EventUserUnregisterUserInEventUseCase>();
+            services.AddScoped<IEventUserCheckRegistrationUseCase, EventUserCheckRegistrationUseCase>();
+            services.AddScoped<IEventUserGetByUserIdAndEventIdUseCase, EventUserGetByUserIdAndEventIdUseCase>();
         }
 
         private static void AddUserScopes(IServiceCollection services)

@@ -19,7 +19,12 @@ namespace EventsManagement.BusinessLogic.Services.EventUserService
             // Главное, чтобы id совпадал
             // await _validator.ValidateAndThrowAsync(eventUser);
 
-            var eu = _mapper.Map<EventUser>(eventUser);
+            // Фикс проблемы отслеживания объекта EF
+            var existingEventUser = await _unitOfWork.EventUserRepository.GetByIdAsync(eventUser.Id);
+            if (existingEventUser == null)
+                return;
+
+            var eu = _mapper.Map<EventUser>(existingEventUser);
             _unitOfWork.EventUserRepository.UnregisterUserInEvent(eu);
             await _unitOfWork.EventUserRepository.SaveChangesAsync();
         }
