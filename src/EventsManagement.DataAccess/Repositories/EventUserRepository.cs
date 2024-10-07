@@ -41,5 +41,10 @@ namespace EventsManagement.DataAccess.Repositories
         {
             return Context.EventUsers.Where(a => a.EventId == eventId);
         }
+
+        public IQueryable<EventUser> GetEventsOfUser(int userId)
+        {
+            return Context.EventUsers.Where(a => a.UserId == userId);
+        }
     }
 }

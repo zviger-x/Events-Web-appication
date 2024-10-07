@@ -24,7 +24,7 @@ export default function EventCreateForm() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setEvent({ ...event, [name]: value });
-        setErrors({ ...errors, [name]: '' }); // Remove errors on change
+        setErrors({ }); // Remove errors on change
     };
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +68,7 @@ export default function EventCreateForm() {
                     <h1>Create Event</h1>
                 </div>
                 <div className="event-image">
-                    {imageSrc && <img src={imageSrc} alt="Event" style={{ maxHeight: '100px' }} />}
+                    {imageSrc && <img src={imageSrc} alt="Event" />}
                 </div>
                 <div className="event-details">
                     <Form onSubmit={handleSubmit}>
@@ -145,7 +145,7 @@ export default function EventCreateForm() {
                                     onChange={handleInputChange}
                                     rows={3}
                                 />
-                                {errors.description && <div style={{ color: 'red' }}>{errors.description}</div>}
+                                {errors.description && <div style={{ color: 'darkred' }}>{errors.description}</div>}
                             </Form.Field>
                         </div>
                         <div style={{ paddingTop: '20px' }}> 

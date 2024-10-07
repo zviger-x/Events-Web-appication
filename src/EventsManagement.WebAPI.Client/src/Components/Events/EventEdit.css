@@ -20,9 +20,10 @@ textarea {
 }
 
     .event-image img {
-        min-block-size: fit-content;
+        min-block-size: -webkit-fill-available;
+        max-height: 250px;
         max-width: 300px;
-        max-height: 300px;
+        min-height: 150px;
         object-fit: cover;
     }
 

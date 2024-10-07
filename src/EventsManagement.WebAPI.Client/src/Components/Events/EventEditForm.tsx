@@ -105,7 +105,7 @@ export default function EventEditForm() {
                     <h1>Edit event</h1>
                 </div>
                 <div className="event-image">
-                    {imageSrc && <img src={imageSrc} alt="Event" style={{ maxHeight: '100px' }} />}
+                    {imageSrc && <img src={imageSrc} alt="Event"/>}
                 </div>
                 <div className="event-details">
                     <Form onSubmit={handleSubmit}>
@@ -128,7 +128,7 @@ export default function EventEditForm() {
                                     error={!!errors.name}
                                     placeholder={errors.name || ''}
                                 />
-                                {errors.nameDuplicate && <div style={{ color: 'red' }}>{errors.nameDuplicate}</div>}
+                                {errors.nameDuplicate && <div style={{ color: 'darkred' }}>{errors.nameDuplicate}</div>}
                             </Form.Field>
                             <Form.Field style={{ flex: '1 1 45%' }}>
                                 <label>Category</label>
@@ -183,7 +183,7 @@ export default function EventEditForm() {
                                     onChange={handleInputChange}
                                     rows={3}
                                 />
-                                {errors.description && <div style={{ color: 'red' }}>{errors.description}</div>}
+                                {errors.description && <div style={{ color: 'darkred' }}>{errors.description}</div>}
                             </Form.Field>
                         </div>
                         <div style={{ paddingTop: '20px'}}>

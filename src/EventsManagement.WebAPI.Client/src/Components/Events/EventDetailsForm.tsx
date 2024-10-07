@@ -5,8 +5,11 @@ import APIConnector from "../../API/APIConnector";
 import { Button, Segment } from "semantic-ui-react";
 import noImg from "../../assets/no_img.jpg";
 import "./EventDetails.css";
+import TH from "../../API/TokenHandler"
+import UserRoles from "../../Models/Users/UserRoles";
 
-export default function EventDetailsForm() {
+export default function EventsDetailsForm() {
+    const userRole = String(TH.GetUserRole(TH.ParseToken(TH.GetToken()!)));
     const { id } = useParams();
     const [event, setEvent] = useState<EventDTO>();
 
@@ -80,8 +83,12 @@ export default function EventDetailsForm() {
                     </div>
                 </div>
                 <div className="event-buttons">
-                    <Button as={NavLink} to={`delete`} floated='right' color="red" type="submit">Delete</Button>
-                    <Button as={NavLink} to={`edit`} floated='right' color="yellow" type="submit">Edit</Button>
+                    {userRole && userRole === UserRoles.Admin && (
+                        <>
+                            <Button as={NavLink} to={`delete`} floated='right' color="red" type="submit">Delete</Button>
+                            <Button as={NavLink} to={`edit`} floated='right' color="yellow" type="submit">Edit</Button>
+                        </>
+                    )}
                     <Button as={NavLink} to='/' floated='right' type='button' content='Back' />
                 </div>
             </Segment>

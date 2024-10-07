@@ -179,18 +179,25 @@ namespace EventsManagement.UnitTests.Services
             var eventEntities = new List<Event>
             {
                 new Event { Id = 1, Name = "Event 1" },
-                new Event { Id = 2, Name = "Event 2" }, 
+                new Event { Id = 2, Name = "Event 2" },
                 new Event { Id = 3, Name = "Event 3" },  // Should
                 new Event { Id = 4, Name = "Event 4" }   // return
             }.AsQueryable().BuildMock();
+            var mappedEvents = new List<EventDTO>
+            {
+                new EventDTO { Id = 1, Name = "Event 1" },
+                new EventDTO { Id = 2, Name = "Event 2" },
+                new EventDTO { Id = 3, Name = "Event 3" },
+                new EventDTO { Id = 4, Name = "Event 4" }
+            };
 
-            var eventDTOs = new List<EventDTO>
+            var excpectedEventDTOs = new List<EventDTO>
             {
                 new EventDTO { Id = 3, Name = "Event 3" },
                 new EventDTO { Id = 4, Name = "Event 4" }
-            }.AsQueryable();
+            };
 
-            _mapperMock.Setup(m => m.ProjectTo<EventDTO>(eventEntities, null)).Returns(eventDTOs);
+            _mapperMock.Setup(m => m.Map<IEnumerable<EventDTO>>(It.IsAny<IEnumerable<Event>>())).Returns(mappedEvents);
             _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
 
             // Act
@@ -198,8 +205,8 @@ namespace EventsManagement.UnitTests.Services
 
             // Assert
             _unitOfWorkMock.Verify(uow => uow.EventRepository.GetAll(), Times.Once);
-            ClassicAssert.IsTrue(eventDTOs.First().Id == result.Items.First().Id);
-            ClassicAssert.AreEqual(eventDTOs.Count(), result.Items.Count);
+            ClassicAssert.IsTrue(excpectedEventDTOs.First().Id == result.Items.First().Id);
+            ClassicAssert.AreEqual(excpectedEventDTOs.Count(), result.Items.Count);
             ClassicAssert.AreEqual(eventEntities.Count(), result.TotalCount);
             ClassicAssert.AreEqual(pageIndex, result.PageIndex);
             ClassicAssert.AreEqual(pageSize, result.PageSize);

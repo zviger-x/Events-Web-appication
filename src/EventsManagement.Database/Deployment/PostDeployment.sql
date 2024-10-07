@@ -1,8 +1,20 @@
 ﻿-- Создание тестовых объектов
+
+-- Password 'user'  is AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==
+-- Password 'admin' is ACL7tK7YJSq5fAU0BGijvSD8iMIJkygQNxU5T3ccOGwXze12koSlUFbT/3n/6rpAYA==
 INSERT INTO [dbo].[Users]
 VALUES
-('TestName1', 'TestSurname1', GETDATE(), 'Test@Email.com'),
-('TestName2', 'TestSurname2', GETDATE(), 'Test@Email.com')
+('User 1', 'User default', GETDATE(), 'userdefault@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('User 2', 'User default', GETDATE(), 'userdefault2@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('User 3', 'User default', GETDATE(), 'userdefault3@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('User 4', 'User default', GETDATE(), 'userdefault4@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('User 5', 'User default', GETDATE(), 'userdefault5@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('User 6', 'User default', GETDATE(), 'userdefault6@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('User 7', 'User default', GETDATE(), 'userdefault7@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('User 8', 'User default', GETDATE(), 'userdefault8@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('User 9', 'User default', GETDATE(), 'userdefault9@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('User 10', 'User default', GETDATE(), 'userdefault10@Email.com', 'AFyOWZd5yR/WNzhSCGQX6qck6y8QxlNXgXfneGH44Q05nUF0mnui4QMCb0diKjNNCw==', 'User'),
+('Admin', 'User admin', GETDATE(), 'useradmin@Email.com', 'ACL7tK7YJSq5fAU0BGijvSD8iMIJkygQNxU5T3ccOGwXze12koSlUFbT/3n/6rpAYA==', 'Admin')
 
 INSERT INTO [dbo].[Events]
 VALUES
@@ -20,6 +32,18 @@ VALUES
 INSERT INTO [dbo].[EventUsers]
 VALUES
 (1, 1, GETDATE()),
-(2, 1, GETDATE())
-
-DELETE FROM [dbo].[Users] WHERE [Id] = 2
+(2, 1, GETDATE()),
+(3, 1, GETDATE()),
+(4, 1, GETDATE()),
+(5, 1, GETDATE()),
+(6, 1, GETDATE()),
+(7, 1, GETDATE()),
+(8, 1, GETDATE()),
+(9, 1, GETDATE()),
+(10, 1, GETDATE()),
+(1, 2, GETDATE()),
+(2, 2, GETDATE()),
+(3, 2, GETDATE()),
+(4, 2, GETDATE()),
+(5, 2, GETDATE()),
+(6, 2, GETDATE())

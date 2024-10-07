@@ -1,5 +1,6 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventsManagement.WebAPI.Server.Controllers
@@ -101,6 +102,7 @@ namespace EventsManagement.WebAPI.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<EventDTO>> Create([FromBody] EventDTO @event)
         {
             try
@@ -116,6 +118,7 @@ namespace EventsManagement.WebAPI.Server.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<EventDTO>> Edit(int id, [FromBody] EventDTO @event)
         {
             if (id != @event.Id)
@@ -136,6 +139,7 @@ namespace EventsManagement.WebAPI.Server.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             await _eventDeleteUseCase.DeleteAsync(new EventDTO() { Id = id });

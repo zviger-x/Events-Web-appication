@@ -1,17 +1,13 @@
 using EventsManagement.BusinessLogic.AutoMapping;
-using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.EventService;
-using EventsManagement.BusinessLogic.Services.EventUserService;
-using EventsManagement.BusinessLogic.Services.Interfaces;
-using EventsManagement.BusinessLogic.Services.UserService;
-using EventsManagement.BusinessLogic.UnitOfWork;
-using EventsManagement.BusinessLogic.Validation.Validators;
-using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.Contexts;
-using EventsManagement.DataAccess.Repositories;
-using EventsManagement.DataAccess.Repositories.Interfaces;
 using EventsManagement.DataObjects.Entities;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace EventsManagement.WebAPI.Server
 {
@@ -21,34 +17,88 @@ namespace EventsManagement.WebAPI.Server
         {
             var builder = WebApplication.CreateBuilder(args);
             var services = builder.Services;
+            var configuration = builder.Configuration;
 
-            var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DB"].ConnectionString;
+            JwtSettings.Set(configuration["Jwt:Key"], configuration["Jwt:Issuer"], configuration["Jwt:Audience"]);
+
+            var connectionString = configuration.GetConnectionString("DB");
             services.AddDbContext<EventsManagementDbContext>(options => options.UseSqlServer(connectionString));
             ScopesConfigurator.AddScopes(services);
 
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<EventUserCounterMappingAction>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
-                // c.ResolveConflictingActions(apiDesc => apiDesc.First());
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Events management API", Version = "v1" });
+
+                // Определение для использования Bearer токена
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = $"Введите 'Bearer [token]'. Должно выглядеть так 'Bearer eyJhbGci...'",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                // Применение определения безопасности ко всем API
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
 
             services.AddCors(c => c.AddPolicy("CorsPolicy", policyBuilder =>
             {
                 policyBuilder.AllowAnyHeader();
                 policyBuilder.AllowAnyMethod();
-                policyBuilder.WithOrigins(@"https://localhost:5173");
+                policyBuilder.WithOrigins(configuration["Links:Client"]);
             }));
+
+            services.AddIdentityServer()
+                .AddInMemoryClients(IdentityServerConfig.GetClients(configuration))
+                .AddInMemoryApiScopes(IdentityServerConfig.GetApiScopes(configuration))
+                .AddInMemoryApiResources(IdentityServerConfig.GetApiResources(configuration))
+                .AddInMemoryIdentityResources(IdentityServerConfig.GetIdentityResources(configuration))
+                .AddDeveloperSigningCredential();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = JwtSettings.Issuer,
+                        ValidAudience = JwtSettings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSettings.SecretKey))
+                    };
+                });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
+            });
 
             var app = builder.Build();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -57,83 +107,16 @@ namespace EventsManagement.WebAPI.Server
 
             app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
+
+            app.UseIdentityServer();
+            
+            app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
             app.MapFallbackToFile("/index.html");
 
             app.Run();
-        }
-    }
-
-    internal static class ScopesConfigurator
-    {
-        public static void AddScopes(IServiceCollection services)
-        {
-            AddValidatorsScopes(services);
-            AddUnitOfWorkScopes(services);
-            AddRepositoriesScopes(services);
-            AddServicesScopes(services);
-        }
-
-        public static void AddRepositoriesScopes(IServiceCollection services)
-        {
-            services.AddScoped<IEventRepository, EventRepository>();
-            services.AddScoped<IEventUserRepository, EventUserRepository>();
-            services.AddScoped<IRepository<User>, UserRepository>();
-        }
-
-        public static void AddServicesScopes(IServiceCollection services)
-        {
-            AddEventScopes(services);
-            AddEventUserScopes(services);
-            AddUserScopes(services);
-        }
-
-        public static void AddUnitOfWorkScopes(IServiceCollection services)
-        {
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-        }
-
-        public static void AddValidatorsScopes(IServiceCollection services)
-        {
-            services.AddScoped<IBaseValidator<EventDTO>, EventValidator>();
-            services.AddScoped<IBaseValidator<EventUserDTO>, EventUserValidator>();
-            services.AddScoped<IBaseValidator<UserDTO>, UserValidator>();
-        }
-
-        private static void AddEventScopes(IServiceCollection services)
-        {
-            services.AddScoped<ICreateUseCase<EventDTO>, EventCreateUseCase>();
-            services.AddScoped<IDeleteUseCase<EventDTO>, EventDeleteUseCase>();
-            services.AddScoped<IUpdateUseCase<EventDTO>, EventUpdateUseCase>();
-            services.AddScoped<IGetAllUseCase<EventDTO>, EventGetAllUseCase>();
-            services.AddScoped<IGetPaginatedListUseCase<EventDTO>, EventGetPaginatedListUseCase>();
-            services.AddScoped<IGetByIdUseCase<EventDTO>, EventGetByIdUseCase>();
-            services.AddScoped<IGetEventsByCategoryUseCase, EventGetByCategoryUseCase>();
-            services.AddScoped<IGetEventsByDateUseCase, EventGetByDateUseCase>();
-            services.AddScoped<IGetEventByNameUseCase, EventGetByNameUseCase>();
-            services.AddScoped<IGetEventsByVenueUseCase, EventGetByVenueUseCase>();
-        }
-
-        private static void AddEventUserScopes(IServiceCollection services)
-        {
-            services.AddScoped<IUpdateUseCase<EventUserDTO>, EventUserUpdateUseCase>();
-            services.AddScoped<IGetAllUseCase<EventUserDTO>, EventUserGetAllUseCase>();
-            services.AddScoped<IGetPaginatedListUseCase<EventUserDTO>, EventUserGetPaginatedListUseCase>();
-            services.AddScoped<IGetByIdUseCase<EventUserDTO>, EventUserGetByIdUseCase>();
-            services.AddScoped<IGetUsersOfEventUseCase, EventUserGetUsersOfEventUseCase>();
-            services.AddScoped<IRegisterUserInEventUseCase, EventUserRegisterUserInEventUseCase>();
-            services.AddScoped<IUnregisterUserInEventUseCase, EventUserUnregisterUserInEventUseCase>();
-        }
-
-        private static void AddUserScopes(IServiceCollection services)
-        {
-            services.AddScoped<ICreateUseCase<UserDTO>, UserCreateUseCase>();
-            services.AddScoped<IDeleteUseCase<UserDTO>, UserDeleteUseCase>();
-            services.AddScoped<IUpdateUseCase<UserDTO>, UserUpdateUseCase>();
-            services.AddScoped<IGetAllUseCase<UserDTO>, UserGetAllUseCase>();
-            services.AddScoped<IGetPaginatedListUseCase<UserDTO>, UserGetPaginatedListUseCase>();
-            services.AddScoped<IGetByIdUseCase<UserDTO>, UserGetByIdUseCase>();
         }
     }
 }

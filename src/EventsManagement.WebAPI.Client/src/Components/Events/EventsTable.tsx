@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { EventDTO } from "../../Models/Events/EventDTO";
-import APIConnector from "../../API/APIConnector";
-import { Button, Container, Dropdown, Form } from "semantic-ui-react";
-import EventsTableItem from "./EventsTableItem";
 import { NavLink, useSearchParams } from "react-router-dom";
+import { Button, Container, Dropdown, Form } from "semantic-ui-react";
+import APIConnector from "../../API/APIConnector";
+import TH from '../../API/TokenHandler';
+import { EventDTO } from "../../Models/Events/EventDTO";
+import UserRoles from "../../Models/Users/UserRoles";
 import "./EventsTable.css";
+import EventsTableItem from "./EventsTableItem";
 
 export default function EventsTable() {
+    const userRole = String(TH.GetUserRole(TH.ParseToken(TH.GetToken()!)));
     const [events, setEvents] = useState<EventDTO[]>();
     const [searchParams, setSearchParams] = useSearchParams();
     const [selectedSort, setSelectedSort] = useState<string | undefined>();
@@ -102,7 +105,9 @@ export default function EventsTable() {
                     <Button onClick={handleApplyFilter}>Apply filter</Button>
                 </Form>
 
-                <Button as={NavLink} to="event/create" floated="right" type="button" content="Create event" positive style={{margin: '0px 0px 15px 0px'}} />
+                {userRole && userRole === UserRoles.Admin && (
+                    <Button as={NavLink} to="event/create" floated="right" type="button" content="Create event" positive style={{ margin: '0px 0px 15px 0px' }} />
+                )}
 
                 <table className="ui table">
                     <thead style={{ textAlign: 'center' }}>

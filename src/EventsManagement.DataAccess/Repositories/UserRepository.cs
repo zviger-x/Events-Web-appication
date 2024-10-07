@@ -1,11 +1,13 @@
 ﻿using EventsManagement.DataAccess.Contexts;
+using EventsManagement.DataAccess.Repositories.Interfaces;
 using EventsManagement.DataObjects.Entities;
-using EventsManagement.DataObjects.Utilities.Interfaces;
 using EventsManagement.DataObjects.Utilities;
+using EventsManagement.DataObjects.Utilities.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.DataAccess.Repositories
 {
-    internal class UserRepository : BaseRepository<User>
+    internal class UserRepository : BaseRepository<User>, IUserRepository
     {
         public UserRepository(EventsManagementDbContext context) : base(context)
         {
@@ -24,6 +26,11 @@ namespace EventsManagement.DataAccess.Repositories
         public override async Task<IPaginatedList<User>> GetPaginatedListAsync(int pageIndex, int pageSize)
         {
             return await PaginatedList<User>.CreateAsync(Context.Users, pageIndex, pageSize);
+        }
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await Context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

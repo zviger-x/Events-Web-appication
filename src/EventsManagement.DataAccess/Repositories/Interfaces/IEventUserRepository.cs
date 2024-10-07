@@ -24,5 +24,12 @@ namespace EventsManagement.DataAccess.Repositories.Interfaces
         /// <param name="eventId">Event id</param>
         /// <returns>An array of all user of the event.</returns>
         IQueryable<EventUser> GetUsersOfEvent(int eventId);
+
+        /// <summary>
+        /// Returns all events where the user participates.
+        /// </summary>
+        /// <param name="userId">User id</param>
+        /// <returns>An array of all events of the user.</returns>
+        IQueryable<EventUser> GetEventsOfUser(int userId);
     }
 }
