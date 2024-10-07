@@ -14,6 +14,8 @@ namespace EventsManagement.WebAPI.Server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
             var services = builder.Services;
             var configuration = builder.Configuration;
 
@@ -94,6 +96,8 @@ namespace EventsManagement.WebAPI.Server
 
             var app = builder.Build();
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
@@ -101,13 +105,14 @@ namespace EventsManagement.WebAPI.Server
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                //app.UseDeveloperExceptionPage();
             }
 
             app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
 
             app.UseIdentityServer();
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
 

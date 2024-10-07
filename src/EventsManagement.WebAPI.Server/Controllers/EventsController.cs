@@ -48,6 +48,12 @@ namespace EventsManagement.WebAPI.Server.Controllers
             _getUsersOfEventUseCase = getUsersOfEventUseCase;
         }
 
+        [HttpGet("error")]
+        public IActionResult GetError()
+        {
+            throw new InvalidOperationException("This is a test exception.");
+        }
+
         [HttpGet]
         public async Task<ActionResult<List<EventDTO>>> GetAll(
             [FromQuery] string? sortby = null,

@@ -61,6 +61,7 @@ export default function EventsTable() {
     };
 
     const handleApplyFilter = () => {
+        handlePageChange(1);
         handleSortChange(selectedSort || undefined, filterValue || undefined);
     };
 
