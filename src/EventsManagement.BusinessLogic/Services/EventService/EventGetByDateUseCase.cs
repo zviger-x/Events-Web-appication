@@ -1,23 +1,24 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.BusinessLogic.Services.EventService
 {
-    internal class EventGetByDateUseCase : BaseUseCase<EventDTO>, IGetEventByDateUseCase
+    internal class EventGetByDateUseCase : BaseUseCase<EventDTO>, IGetEventsByDateUseCase
     {
         public EventGetByDateUseCase(IUnitOfWork unitOfWork, IMapper mapper, IBaseValidator<EventDTO> validator)
             : base(unitOfWork, mapper, validator)
         {
         }
 
-        public IQueryable<EventDTO> GetByDate(DateTime date)
+        public async Task<IEnumerable<EventDTO>> GetByDateAsync(DateTime date)
         {
-            var events = _unitOfWork.EventRepository.GetByDate(date);
-            return events.ProjectTo<EventDTO>(_mapper.ConfigurationProvider);
+            var events = await _unitOfWork.EventRepository.GetByDate(date).ToListAsync();
+            var eventDTOs = _mapper.Map<IEnumerable<EventDTO>>(events);
+            return eventDTOs;
         }
     }
 }

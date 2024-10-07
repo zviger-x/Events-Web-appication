@@ -1,23 +1,24 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
-using EventsManagement.BusinessLogic.Validation.Validators;
+using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.BusinessLogic.Services.EventUserService
 {
     internal class EventUserGetAllUseCase : BaseUseCase<EventUserDTO>, IGetAllUseCase<EventUserDTO>
     {
-        public EventUserGetAllUseCase(IUnitOfWork unitOfWork, IMapper mapper, BaseValidator<EventUserDTO> validator)
+        public EventUserGetAllUseCase(IUnitOfWork unitOfWork, IMapper mapper, IBaseValidator<EventUserDTO> validator)
             : base(unitOfWork, mapper, validator)
         {
         }
 
-        public IQueryable<EventUserDTO> GetAll()
+        public async Task<IEnumerable<EventUserDTO>> GetAllAsync()
         {
-            var eventUsers = _unitOfWork.EventUserRepository.GetAll();
-            return eventUsers.ProjectTo<EventUserDTO>(_mapper.ConfigurationProvider);
+            var eventUsers = await _unitOfWork.EventUserRepository.GetAll().ToListAsync();
+            var eventUsersDTOs = _mapper.Map<IEnumerable<EventUserDTO>>(eventUsers);
+            return eventUsersDTOs;
         }
     }
 }

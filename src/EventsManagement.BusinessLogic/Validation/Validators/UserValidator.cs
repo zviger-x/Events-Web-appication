@@ -2,6 +2,7 @@
 using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Messages;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.BusinessLogic.Validation.Validators
 {
@@ -11,8 +12,8 @@ namespace EventsManagement.BusinessLogic.Validation.Validators
             : base(unitOfWork)
         {
             RuleFor(u => u.Name)
-            .NotNull().WithMessage(UserValidationMessages.NameNotNull)
-            .NotEmpty().WithMessage(UserValidationMessages.NameNotEmpty);
+                .NotNull().WithMessage(UserValidationMessages.NameNotNull)
+                .NotEmpty().WithMessage(UserValidationMessages.NameNotEmpty);
 
             RuleFor(u => u.Surname)
                 .NotNull().WithMessage(UserValidationMessages.SurnameNotNull)
@@ -25,7 +26,20 @@ namespace EventsManagement.BusinessLogic.Validation.Validators
             RuleFor(u => u.Email)
                 .NotNull().WithMessage(UserValidationMessages.EmailNotNull)
                 .NotEmpty().WithMessage(UserValidationMessages.EmailNotEmpty)
-                .EmailAddress().WithMessage(UserValidationMessages.EmailInvalid);
+                .EmailAddress().WithMessage(UserValidationMessages.EmailInvalid)
+                .MustAsync(IsUniqueEmail).WithMessage(UserValidationMessages.EmailMustBeUnique);
+        }
+
+        private async Task<bool> IsUniqueEmail(UserDTO user, string email, CancellationToken token)
+        {
+            if (user.IsUpdate)
+            {
+                return !await _unitOfWork.UserRepository.GetAll()
+                    .AnyAsync(e => e.Email == email && e.Id != user.Id, token);
+            }
+
+            return !await _unitOfWork.UserRepository.GetAll()
+                .AnyAsync(e => e.Email == email, token);
         }
     }
 }

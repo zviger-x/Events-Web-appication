@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IGetUsersOfEventUseCase
+    public interface IGetUsersOfEventUseCase
     {
         /// <summary>
         /// Returns all users of the event.

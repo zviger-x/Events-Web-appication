@@ -1,5 +1,4 @@
 ﻿using EventsManagement.DataObjects.Utilities.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.DataObjects.Utilities
 {
@@ -24,10 +23,10 @@ namespace EventsManagement.DataObjects.Utilities
             Items = items;
         }
 
-        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> sourceList, int pageIndex, int pageSize)
+        public static async Task<PaginatedList<T>> CreateAsync(IEnumerable<T> sourceList, int pageIndex, int pageSize)
         {
-            var count = await sourceList.CountAsync();
-            var items = await sourceList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            var count = await Task.Run(() => sourceList.Count());
+            var items = await Task.Run(() => sourceList.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList());
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
     }

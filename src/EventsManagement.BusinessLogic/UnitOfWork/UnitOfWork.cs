@@ -11,7 +11,7 @@ namespace EventsManagement.BusinessLogic.UnitOfWork
         private readonly IServiceProvider _serviceProvider;
 
         private IEventRepository _eventRepository;
-        private IRepository<User> _userRepository;
+        private IUserRepository _userRepository;
         private IEventUserRepository _eventUserRepository;
 
         public UnitOfWork(EventsManagementDbContext context, IServiceProvider serviceProvider)
@@ -22,7 +22,7 @@ namespace EventsManagement.BusinessLogic.UnitOfWork
 
         public IEventRepository EventRepository => _eventRepository ??= _serviceProvider.GetRequiredService<IEventRepository>();
 
-        public IRepository<User> UserRepository => _userRepository ??= _serviceProvider.GetRequiredService<IRepository<User>>();
+        public IUserRepository UserRepository => _userRepository ??= _serviceProvider.GetRequiredService<IUserRepository>();
 
         public IEventUserRepository EventUserRepository => _eventUserRepository ??= _serviceProvider.GetRequiredService<IEventUserRepository>();
 

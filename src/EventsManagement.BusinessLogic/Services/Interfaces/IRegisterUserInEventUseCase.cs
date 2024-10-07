@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IRegisterUserInEventUseCase
+    public interface IRegisterUserInEventUseCase
     {
         /// <summary>
         /// Registers a user in an event

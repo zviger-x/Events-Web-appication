@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IDeleteUseCase<T>
+    public interface IDeleteUseCase<T>
         where T : IEntityDTO
     {
         /// <summary>

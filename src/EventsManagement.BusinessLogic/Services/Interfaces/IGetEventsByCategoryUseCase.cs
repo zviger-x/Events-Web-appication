@@ -2,13 +2,13 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IGetEventByDateUseCase
+    public interface IGetEventsByCategoryUseCase
     {
         /// <summary>
-        /// Returns an array of events by date.
+        /// Returns an array of events by category.
         /// </summary>
-        /// <param name="date">Event date and time.</param>
+        /// <param name="category">Event category.</param>
         /// <returns>An array of events.</returns>
-        IQueryable<EventDTO> GetByDate(DateTime date);
+        Task<IEnumerable<EventDTO>> GetByCategoryAsync(string category);
     }
 }

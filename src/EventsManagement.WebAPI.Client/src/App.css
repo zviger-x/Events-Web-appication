@@ -1,0 +1,51 @@
+﻿body {
+    background-color: #404650 !important;
+}
+
+h1 {
+    color: ghostwhite;
+}
+
+.overflow-wrap {
+    overflow-wrap: anywhere;
+}
+
+.container-style {
+    margin-top: 7em;
+}
+
+.app-tab-container {
+    padding: 20px 10%;
+    min-height: 50px;
+    background-color: #525a66;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.table-upper-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-container {
+    outline: solid !important;
+    outline-color: #333840 !important;
+    outline-width: 2px !important;
+    background-color: #525a66 !important;
+}
+
+.load-text {
+    align-content: center;
+    min-height: 250px;
+    text-align: center;
+}
+
+.no-events-info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}

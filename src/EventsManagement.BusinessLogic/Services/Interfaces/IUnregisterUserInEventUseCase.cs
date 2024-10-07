@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IUnregisterUserInEventUseCase
+    public interface IUnregisterUserInEventUseCase
     {
         /// <summary>
         /// Unregisters a user in an event

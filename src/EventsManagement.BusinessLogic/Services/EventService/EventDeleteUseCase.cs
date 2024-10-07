@@ -16,7 +16,8 @@ namespace EventsManagement.BusinessLogic.Services.EventService
 
         public async Task DeleteAsync(EventDTO entity)
         {
-            await _validator.ValidateAndThrowAsync(entity);
+            // Главное, чтобы id совпадал
+            // await _validator.ValidateAndThrowAsync(entity);
 
             var e = _mapper.Map<Event>(entity);
             _unitOfWork.EventRepository.Delete(e);

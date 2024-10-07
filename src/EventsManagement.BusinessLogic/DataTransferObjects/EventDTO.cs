@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.DataTransferObjects
 {
-    internal class EventDTO : IEntityDTO
+    public class EventDTO : IEntityDTO
     {
         public int Id { get; set; }
 
@@ -16,8 +16,12 @@ namespace EventsManagement.BusinessLogic.DataTransferObjects
 
         public string Category { get; set; }
 
+        public int CurrentNumberOfParticipants { get; set; }
+
         public int MaxNumberOfParticipants { get; set; }
 
         public byte[]? Image { get; set; }
+
+        public bool IsUpdate { get; set; }
     }
 }

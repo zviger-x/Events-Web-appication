@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.DataTransferObjects
 {
-    internal class UserDTO : IEntityDTO
+    public class UserDTO : IEntityDTO
     {
         public int Id { get; set; }
 
@@ -13,5 +13,11 @@ namespace EventsManagement.BusinessLogic.DataTransferObjects
         public DateTime BirthDate { get; set; }
 
         public string Email { get; set; }
+
+        public string Password { get; set; }
+
+        public string Role { get; set; }
+
+        public bool IsUpdate { get; set; }
     }
 }

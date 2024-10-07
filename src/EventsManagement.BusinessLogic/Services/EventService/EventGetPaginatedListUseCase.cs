@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataObjects.Utilities;
 using EventsManagement.DataObjects.Utilities.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.BusinessLogic.Services.EventService
 {
@@ -18,9 +18,14 @@ namespace EventsManagement.BusinessLogic.Services.EventService
 
         public async Task<IPaginatedList<EventDTO>> GetPaginatedListAsync(int pageIndex, int pageSize)
         {
-            var events = _unitOfWork.EventRepository.GetAll();
-            var eventDTOs = events.ProjectTo<EventDTO>(_mapper.ConfigurationProvider);
+            var events = await _unitOfWork.EventRepository.GetAll().ToListAsync();
+            var eventDTOs = _mapper.Map<IEnumerable<EventDTO>>(events);
             return await PaginatedList<EventDTO>.CreateAsync(eventDTOs, pageIndex, pageSize);
+        }
+
+        public async Task<IPaginatedList<EventDTO>> GetPaginatedListAsync(IEnumerable<EventDTO> entities, int pageIndex, int pageSize)
+        {
+            return await PaginatedList<EventDTO>.CreateAsync(entities, pageIndex, pageSize);
         }
     }
 }

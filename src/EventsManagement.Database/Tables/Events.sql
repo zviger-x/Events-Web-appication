@@ -7,5 +7,5 @@
     [Venue] NVARCHAR(120) NOT NULL,
     [Category] NVARCHAR(120) NOT NULL, 
     [MaxNumberOfParticipants] INT NOT NULL, 
-    [Image] IMAGE NULL
+    [Image] VARBINARY(MAX) NULL
 )

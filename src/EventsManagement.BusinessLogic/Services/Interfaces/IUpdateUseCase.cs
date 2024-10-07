@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IUpdateUseCase<T>
+    public interface IUpdateUseCase<T>
         where T : IEntityDTO
     {
         /// <summary>

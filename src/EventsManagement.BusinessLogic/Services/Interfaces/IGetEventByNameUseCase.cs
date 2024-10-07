@@ -2,7 +2,7 @@
 
 namespace EventsManagement.BusinessLogic.Services.Interfaces
 {
-    internal interface IGetEventByNameUseCase
+    public interface IGetEventByNameUseCase
     {
         /// <summary>
         /// Returns an event by its name.
