@@ -23,6 +23,7 @@ export default function UserEditForm() {
         const fetchUserData = async () => {
             if (id) {
                 const fetchedUser = await APIConnector.GetUserById(parseInt(id));
+                fetchedUser!.password = "";
                 setUser(fetchedUser!);
             }
         };
@@ -125,12 +126,11 @@ export default function UserEditForm() {
                             <Form.Field style={{ flex: '1 1 45%' }}>
                                 <label>Password</label>
                                 <Form.Input
-                                    type="password" // Используем тип password для безопасности
+                                    type="password"
                                     name="password"
                                     value={user.password}
                                     onChange={handleInputChange}
                                     error={!!errors.password}
-                                    placeholder="Leave blank to keep current password"
                                 />
                             </Form.Field>
                         </div>
