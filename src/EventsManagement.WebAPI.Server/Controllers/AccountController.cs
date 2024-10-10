@@ -1,10 +1,11 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces.EventUser;
+using EventsManagement.BusinessLogic.UseCases.Interfaces.User;
 using EventsManagement.WebAPI.Server;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -19,7 +20,7 @@ public class AccountController : ControllerBase
     private readonly IGetUserByEmailUseCase _getUserByEmailUseCase;
     private readonly IGetEventsOfUserUseCase _getEventsOfUserUseCase;
     private readonly IVerifyUserPasswordUseCase _userVerifyPasswordUseCase;
-    private readonly IEventUserCheckRegistrationUseCase _eventUserCheckRegistrationUseCase;
+    private readonly ICheckRegistrationUseCase _eventUserCheckRegistrationUseCase;
     private readonly IEventUserGetByUserIdAndEventIdUseCase _eventUserGetByUserIdAndEventIdUseCase;
     private readonly IRegisterUserInEventUseCase _registerUserInEventUseCase;
     private readonly IUnregisterUserInEventUseCase _unregisterUserInEventUseCase;
@@ -33,7 +34,7 @@ public class AccountController : ControllerBase
         IGetUserByEmailUseCase getUserByEmailUseCase,
         IGetEventsOfUserUseCase getEventsOfUserUseCase,
         IVerifyUserPasswordUseCase userVerifyPasswordUseCase,
-        IEventUserCheckRegistrationUseCase eventUserCheckRegistrationUseCase,
+        ICheckRegistrationUseCase eventUserCheckRegistrationUseCase,
         IEventUserGetByUserIdAndEventIdUseCase eventUserGetByUserIdAndEventIdUseCase,
         IRegisterUserInEventUseCase registerUserInEventUseCase,
         IUnregisterUserInEventUseCase unregisterUserInEventUseCase)
@@ -61,11 +62,11 @@ public class AccountController : ControllerBase
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             return BadRequest(errorMessageInvalid);
 
-        var user = await _getUserByEmailUseCase.GetByEmailAsync(request.Email);
+        var user = await _getUserByEmailUseCase.Execute(request.Email);
         if (user == null)
             return BadRequest(errorMessageInvalid);
 
-        bool isPasswordValid = _userVerifyPasswordUseCase.VerifyPassword(user.Password, request.Password);
+        bool isPasswordValid = _userVerifyPasswordUseCase.Execute((user.Password, request.Password));
         if (!isPasswordValid)
             return BadRequest(errorMessageInvalid);
 
@@ -79,7 +80,7 @@ public class AccountController : ControllerBase
         try
         {
             user.Role = "user";
-            await _createUserUseCase.CreateAsync(user);
+            await _createUserUseCase.Execute(user);
         }
         catch (Exception ex)
         {
@@ -100,7 +101,7 @@ public class AccountController : ControllerBase
 
         try
         {
-            await _updateUserUseCase.UpdateAsync(user);
+            await _updateUserUseCase.Execute(user);
         }
         catch (Exception ex)
         {
@@ -113,7 +114,7 @@ public class AccountController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<UserDTO>> GetById(int id)
     {
-        var user = await _getUserByIdUseCase.GetByIdAsync(id);
+        var user = await _getUserByIdUseCase.Execute(id);
 
         return Ok(user);
     }
@@ -121,7 +122,7 @@ public class AccountController : ControllerBase
     [HttpGet("byemail/{email}")]
     public async Task<ActionResult<UserDTO>> GetByEmail(string email)
     {
-        var user = await _getUserByEmailUseCase.GetByEmailAsync(email);
+        var user = await _getUserByEmailUseCase.Execute(email);
 
         return Ok(user);
     }
@@ -129,7 +130,7 @@ public class AccountController : ControllerBase
     [HttpGet("events/{id}")]
     public ActionResult<UserDTO> GetUserEvents(int id)
     {
-        var user = _getEventsOfUserUseCase.GetEventsOfUser(id);
+        var user = _getEventsOfUserUseCase.Execute(id);
 
         return Ok(user);
     }
@@ -142,7 +143,7 @@ public class AccountController : ControllerBase
         if (userId is null || eventId is null)
             return BadRequest("Id cannot be null");
 
-        var isRegistered = await _eventUserCheckRegistrationUseCase.IsUserRegisteredAsync(userId.Value, eventId.Value);
+        var isRegistered = await _eventUserCheckRegistrationUseCase.Execute((userId.Value, eventId.Value));
 
         return Ok(isRegistered);
     }
@@ -157,7 +158,7 @@ public class AccountController : ControllerBase
         if (eventId is null)
             return BadRequest("Event id cannot be null");
 
-        var isRegistered = await _eventUserCheckRegistrationUseCase.IsUserRegisteredAsync(userId.Value, eventId.Value);
+        var isRegistered = await _eventUserCheckRegistrationUseCase.Execute((userId.Value, eventId.Value));
     
         if (isRegistered)
         {
@@ -171,7 +172,7 @@ public class AccountController : ControllerBase
             RegistrationDate = DateTime.UtcNow
         };
     
-        await _registerUserInEventUseCase.RegisterUserInEventAsync(eventUser);
+        await _registerUserInEventUseCase.Execute(eventUser);
         return Ok("User registered for the event successfully.");
     }
 
@@ -185,13 +186,13 @@ public class AccountController : ControllerBase
         if (eventId is null)
             return BadRequest("Event id cannot be null");
 
-        var eventUser = await _eventUserGetByUserIdAndEventIdUseCase.GetByUserIdAndEventId(userId.Value, eventId.Value);
+        var eventUser = await _eventUserGetByUserIdAndEventIdUseCase.Execute((userId.Value, eventId.Value));
         if (eventUser == null)
         {
             return NotFound("User is not registered for this event.");
         }
 
-        await _unregisterUserInEventUseCase.UnregisterUserInEventAsync(new EventUserDTO() { Id = eventUser.Id });
+        await _unregisterUserInEventUseCase.Execute(new EventUserDTO() { Id = eventUser.Id });
 
         return Ok("User unregistered from the event successfully.");
     }

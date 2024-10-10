@@ -3,11 +3,15 @@ using EventsManagement.BusinessLogic.Services.EventService;
 using EventsManagement.BusinessLogic.Services.EventUserService;
 using EventsManagement.BusinessLogic.Services.Interfaces;
 using EventsManagement.BusinessLogic.Services.UserService;
-using EventsManagement.BusinessLogic.UnitOfWork;
+using EventsManagement.BusinessLogic.UseCases.Event;
+using EventsManagement.BusinessLogic.UseCases.Interfaces.Event;
+using EventsManagement.BusinessLogic.UseCases.Interfaces.EventUser;
+using EventsManagement.BusinessLogic.UseCases.Interfaces.User;
 using EventsManagement.BusinessLogic.Validation.Validators;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.Repositories;
 using EventsManagement.DataAccess.Repositories.Interfaces;
+using EventsManagement.DataAccess.UnitOfWork;
 
 namespace EventsManagement.WebAPI.Server
 {
@@ -53,25 +57,20 @@ namespace EventsManagement.WebAPI.Server
             services.AddScoped<IDeleteUseCase<EventDTO>, EventDeleteUseCase>();
             services.AddScoped<IUpdateUseCase<EventDTO>, EventUpdateUseCase>();
             services.AddScoped<IGetAllUseCase<EventDTO>, EventGetAllUseCase>();
-            services.AddScoped<IGetPaginatedListUseCase<EventDTO>, EventGetPaginatedListUseCase>();
+            services.AddScoped<IGetEventsSortedAndPaginatedUseCase, EventGetAllSortedAndPaginatedUseCase>();
             services.AddScoped<IGetByIdUseCase<EventDTO>, EventGetByIdUseCase>();
-            services.AddScoped<IGetEventsByCategoryUseCase, EventGetByCategoryUseCase>();
-            services.AddScoped<IGetEventsByDateUseCase, EventGetByDateUseCase>();
-            services.AddScoped<IGetEventByNameUseCase, EventGetByNameUseCase>();
-            services.AddScoped<IGetEventsByVenueUseCase, EventGetByVenueUseCase>();
         }
 
         private static void AddEventUserScopes(IServiceCollection services)
         {
             services.AddScoped<IUpdateUseCase<EventUserDTO>, EventUserUpdateUseCase>();
             services.AddScoped<IGetAllUseCase<EventUserDTO>, EventUserGetAllUseCase>();
-            services.AddScoped<IGetPaginatedListUseCase<EventUserDTO>, EventUserGetPaginatedListUseCase>();
             services.AddScoped<IGetByIdUseCase<EventUserDTO>, EventUserGetByIdUseCase>();
             services.AddScoped<IGetUsersOfEventUseCase, EventUserGetUsersOfEventUseCase>();
             services.AddScoped<IGetEventsOfUserUseCase, EventUserGetEventsOfUserUseCase>();
             services.AddScoped<IRegisterUserInEventUseCase, EventUserRegisterUserInEventUseCase>();
             services.AddScoped<IUnregisterUserInEventUseCase, EventUserUnregisterUserInEventUseCase>();
-            services.AddScoped<IEventUserCheckRegistrationUseCase, EventUserCheckRegistrationUseCase>();
+            services.AddScoped<ICheckRegistrationUseCase, EventUserCheckRegistrationUseCase>();
             services.AddScoped<IEventUserGetByUserIdAndEventIdUseCase, EventUserGetByUserIdAndEventIdUseCase>();
         }
 
@@ -81,7 +80,6 @@ namespace EventsManagement.WebAPI.Server
             services.AddScoped<IDeleteUseCase<UserDTO>, UserDeleteUseCase>();
             services.AddScoped<IUpdateUseCase<UserDTO>, UserUpdateUseCase>();
             services.AddScoped<IGetAllUseCase<UserDTO>, UserGetAllUseCase>();
-            services.AddScoped<IGetPaginatedListUseCase<UserDTO>, UserGetPaginatedListUseCase>();
             services.AddScoped<IGetByIdUseCase<UserDTO>, UserGetByIdUseCase>();
             services.AddScoped<IGetUserByEmailUseCase, UserGetByEmailUseCase>();
             services.AddScoped<IVerifyUserPasswordUseCase, UserVerifyPasswordUseCase>();
