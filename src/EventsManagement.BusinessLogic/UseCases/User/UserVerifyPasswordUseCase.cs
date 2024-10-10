@@ -5,7 +5,7 @@ using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.UnitOfWork;
 using Microsoft.AspNet.Identity;
 
-namespace EventsManagement.BusinessLogic.Services.UserService
+namespace EventsManagement.BusinessLogic.UseCases.UserUseCases
 {
     internal class UserVerifyPasswordUseCase : BaseUseCase<UserDTO>, IVerifyUserPasswordUseCase
     {

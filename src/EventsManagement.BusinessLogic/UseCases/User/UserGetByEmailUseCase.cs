@@ -5,7 +5,7 @@ using EventsManagement.BusinessLogic.Validation.Messages;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.UnitOfWork;
 
-namespace EventsManagement.BusinessLogic.Services.UserService
+namespace EventsManagement.BusinessLogic.UseCases.UserUseCases
 {
     internal class UserGetByEmailUseCase : BaseUseCase<UserDTO>, IGetUserByEmailUseCase
     {

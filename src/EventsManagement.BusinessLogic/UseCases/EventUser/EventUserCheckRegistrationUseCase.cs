@@ -4,7 +4,7 @@ using EventsManagement.BusinessLogic.UseCases.Interfaces.EventUser;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.UnitOfWork;
 
-namespace EventsManagement.BusinessLogic.Services.EventUserService
+namespace EventsManagement.BusinessLogic.UseCases.EventUserUseCases
 {
     internal class EventUserCheckRegistrationUseCase : BaseUseCase<EventUserDTO>, ICheckRegistrationUseCase
     {

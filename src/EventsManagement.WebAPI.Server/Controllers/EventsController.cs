@@ -1,5 +1,5 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces;
 using EventsManagement.BusinessLogic.UseCases.Interfaces.Event;
 using EventsManagement.BusinessLogic.UseCases.Interfaces.EventUser;
 using Microsoft.AspNetCore.Authorization;

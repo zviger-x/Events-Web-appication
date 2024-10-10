@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.UnitOfWork;
 using EventsManagement.DataObjects.Entities;
 
-namespace EventsManagement.BusinessLogic.Services.EventUserService
+namespace EventsManagement.BusinessLogic.UseCases.EventUserUseCases
 {
     internal class EventUserUpdateUseCase : BaseUseCase<EventUserDTO>, IUpdateUseCase<EventUserDTO>
     {

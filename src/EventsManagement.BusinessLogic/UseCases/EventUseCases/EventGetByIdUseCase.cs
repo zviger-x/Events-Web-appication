@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces;
 using EventsManagement.BusinessLogic.Validation.Messages;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.UnitOfWork;
 
-namespace EventsManagement.BusinessLogic.Services.EventService
+namespace EventsManagement.BusinessLogic.UseCases.EventUseCases
 {
     internal class EventGetByIdUseCase : BaseUseCase<EventDTO>, IGetByIdUseCase<EventDTO>
     {

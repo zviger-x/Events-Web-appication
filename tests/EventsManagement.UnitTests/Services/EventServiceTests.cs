@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.EventService;
-using EventsManagement.BusinessLogic.UseCases.Event;
+using EventsManagement.BusinessLogic.UseCases.EventUseCases;
 using EventsManagement.BusinessLogic.Validation.Validators;
 using EventsManagement.DataAccess.Repositories.Interfaces;
 using EventsManagement.DataAccess.UnitOfWork;
 using EventsManagement.DataObjects.Entities;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using MockQueryable;
 using Moq;
 using NUnit.Framework;

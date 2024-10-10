@@ -3,7 +3,7 @@ using EventsManagement.BusinessLogic.DataTransferObjects.Interfaces;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.UnitOfWork;
 
-namespace EventsManagement.BusinessLogic.Services
+namespace EventsManagement.BusinessLogic.UseCases
 {
     internal abstract class BaseUseCase<T>
         where T : IEntityDTO

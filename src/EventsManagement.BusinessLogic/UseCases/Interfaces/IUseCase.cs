@@ -1,4 +1,4 @@
-﻿namespace EventsManagement.BusinessLogic.Services.Interfaces
+﻿namespace EventsManagement.BusinessLogic.UseCases.Interfaces
 {
     public interface IUseCase<in TRequest, out TResponse>
     {

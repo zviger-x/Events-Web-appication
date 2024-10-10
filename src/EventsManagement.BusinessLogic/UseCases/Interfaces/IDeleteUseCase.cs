@@ -1,6 +1,6 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects.Interfaces;
 
-namespace EventsManagement.BusinessLogic.Services.Interfaces
+namespace EventsManagement.BusinessLogic.UseCases.Interfaces
 {
     /// <summary>
     /// Removes an entity.

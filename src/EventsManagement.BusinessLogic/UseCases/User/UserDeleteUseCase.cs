@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.UnitOfWork;
 using EventsManagement.DataObjects.Entities;
 
-namespace EventsManagement.BusinessLogic.Services.UserService
+namespace EventsManagement.BusinessLogic.UseCases.UserUseCases
 {
     internal class UserDeleteUseCase : BaseUseCase<UserDTO>, IDeleteUseCase<UserDTO>
     {

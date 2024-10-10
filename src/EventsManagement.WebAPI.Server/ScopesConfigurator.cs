@@ -1,12 +1,12 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.EventService;
-using EventsManagement.BusinessLogic.Services.EventUserService;
-using EventsManagement.BusinessLogic.Services.Interfaces;
-using EventsManagement.BusinessLogic.Services.UserService;
-using EventsManagement.BusinessLogic.UseCases.Event;
+using EventsManagement.BusinessLogic.UseCases;
+using EventsManagement.BusinessLogic.UseCases.EventUseCases;
+using EventsManagement.BusinessLogic.UseCases.EventUserUseCases;
+using EventsManagement.BusinessLogic.UseCases.Interfaces;
 using EventsManagement.BusinessLogic.UseCases.Interfaces.Event;
 using EventsManagement.BusinessLogic.UseCases.Interfaces.EventUser;
 using EventsManagement.BusinessLogic.UseCases.Interfaces.User;
+using EventsManagement.BusinessLogic.UseCases.UserUseCases;
 using EventsManagement.BusinessLogic.Validation.Validators;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.Repositories;
@@ -21,6 +21,7 @@ namespace EventsManagement.WebAPI.Server
         {
             AddValidatorsScopes(services);
             AddUnitOfWorkScopes(services);
+            AddJwtScopes(services);
             AddRepositoriesScopes(services);
             AddServicesScopes(services);
         }
@@ -42,6 +43,11 @@ namespace EventsManagement.WebAPI.Server
         public static void AddUnitOfWorkScopes(IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+
+        public static void AddJwtScopes(IServiceCollection services)
+        {
+            services.AddScoped<IGenerateJwtTokenUseCase, GenerateJwtTokenUseCase>();
         }
 
         public static void AddValidatorsScopes(IServiceCollection services)
@@ -83,6 +89,7 @@ namespace EventsManagement.WebAPI.Server
             services.AddScoped<IGetByIdUseCase<UserDTO>, UserGetByIdUseCase>();
             services.AddScoped<IGetUserByEmailUseCase, UserGetByEmailUseCase>();
             services.AddScoped<IVerifyUserPasswordUseCase, UserVerifyPasswordUseCase>();
+            services.AddScoped<IVerifyLoginDataUseCase, UserVerifyLoginDataUseCase>();
         }
     }
 }

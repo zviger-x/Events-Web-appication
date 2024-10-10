@@ -1,5 +1,5 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces;
 
 namespace EventsManagement.BusinessLogic.UseCases.Interfaces.EventUser
 {

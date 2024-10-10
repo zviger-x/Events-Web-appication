@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services;
 using EventsManagement.BusinessLogic.UseCases.Interfaces.Event;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
 using EventsManagement.DataAccess.UnitOfWork;
 using EventsManagement.DataObjects.Utilities;
 using Microsoft.EntityFrameworkCore;
 
-namespace EventsManagement.BusinessLogic.UseCases.Event
+namespace EventsManagement.BusinessLogic.UseCases.EventUseCases
 {
     internal class EventGetAllSortedAndPaginatedUseCase : BaseUseCase<EventDTO>, IGetEventsSortedAndPaginatedUseCase
     {
