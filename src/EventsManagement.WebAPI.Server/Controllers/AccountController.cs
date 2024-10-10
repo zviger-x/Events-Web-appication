@@ -53,10 +53,16 @@ public class AccountController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var user = await _verifyLoginDataUseCase.Execute(request);
-
-        var token = _generateJwtTokenUseCase.Execute((user, _secretKey, _issuer, _audience));
-        return Ok(new { AccessToken = token });
+        try
+        {
+            var user = await _verifyLoginDataUseCase.Execute(request);
+            var token = _generateJwtTokenUseCase.Execute((user, _secretKey, _issuer, _audience));
+            return Ok(new { AccessToken = token });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost("register")]
@@ -138,8 +144,15 @@ public class AccountController : ControllerBase
         [FromQuery] int? userId,
         [FromQuery] int? eventId)
     {
-        await _registerUserInEventUseCase.Execute((userId, eventId));
-        return Ok("User registered for the event successfully.");
+        try
+        {
+            await _registerUserInEventUseCase.Execute((userId, eventId));
+            return Ok("User registered for the event successfully.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost("UnregisterFromEvent")]
@@ -147,7 +160,14 @@ public class AccountController : ControllerBase
         [FromQuery] int? userId,
         [FromQuery] int? eventId)
     {
-        await _unregisterUserInEventUseCase.Execute((userId, eventId));
-        return Ok("User unregistered from the event successfully.");
+        try
+        {
+            await _unregisterUserInEventUseCase.Execute((userId, eventId));
+            return Ok("User unregistered from the event successfully.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

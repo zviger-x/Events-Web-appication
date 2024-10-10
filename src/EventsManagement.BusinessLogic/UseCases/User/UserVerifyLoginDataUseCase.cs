@@ -27,21 +27,18 @@ namespace EventsManagement.BusinessLogic.UseCases.UserUseCases
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             {
                 throw new ArgumentException(UserValidationMessages.InvalidEmailOrPassword);
-                return null;
             }
 
             var user = await _getUserByEmailUseCase.Execute(request.Email);
             if (user == null)
             {
                 throw new ArgumentException(UserValidationMessages.InvalidEmailOrPassword);
-                return null;
             }
 
             bool isPasswordValid = _verifyUserPasswordUseCase.Execute((user.Password, request.Password));
             if (!isPasswordValid)
             {
                 throw new ArgumentException(UserValidationMessages.InvalidEmailOrPassword);
-                return null;
             }
 
             return user;
