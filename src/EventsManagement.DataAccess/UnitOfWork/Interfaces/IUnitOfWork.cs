@@ -1,7 +1,6 @@
 ﻿using EventsManagement.DataAccess.Repositories.Interfaces;
-using EventsManagement.DataObjects.Entities;
 
-namespace EventsManagement.BusinessLogic.UnitOfWork
+namespace EventsManagement.DataAccess.UnitOfWork
 {
     internal interface IUnitOfWork
     {

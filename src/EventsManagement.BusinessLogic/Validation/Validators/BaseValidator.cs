@@ -1,7 +1,6 @@
-﻿using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.DataTransferObjects.Interfaces;
-using EventsManagement.BusinessLogic.UnitOfWork;
+﻿using EventsManagement.BusinessLogic.DataTransferObjects.Interfaces;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
+using EventsManagement.DataAccess.UnitOfWork;
 using FluentValidation;
 
 namespace EventsManagement.BusinessLogic.Validation.Validators

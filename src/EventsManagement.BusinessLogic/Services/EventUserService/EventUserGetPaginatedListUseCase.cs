@@ -2,10 +2,10 @@
 using AutoMapper.QueryableExtensions;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
-using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
-using EventsManagement.DataObjects.Utilities.Interfaces;
+using EventsManagement.DataAccess.UnitOfWork;
 using EventsManagement.DataObjects.Utilities;
+using EventsManagement.DataObjects.Utilities.Interfaces;
 
 namespace EventsManagement.BusinessLogic.Services.EventUserService
 {

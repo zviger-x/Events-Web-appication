@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects.Interfaces;
-using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
+using EventsManagement.DataAccess.UnitOfWork;
 
 namespace EventsManagement.BusinessLogic.Services
 {

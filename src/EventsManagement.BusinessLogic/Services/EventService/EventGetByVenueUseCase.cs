@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
-using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Messages;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
+using EventsManagement.DataAccess.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventsManagement.BusinessLogic.Services.EventService

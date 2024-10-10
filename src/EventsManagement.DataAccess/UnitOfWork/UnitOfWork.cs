@@ -1,9 +1,8 @@
 ﻿using EventsManagement.DataAccess.Contexts;
 using EventsManagement.DataAccess.Repositories.Interfaces;
-using EventsManagement.DataObjects.Entities;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventsManagement.BusinessLogic.UnitOfWork
+namespace EventsManagement.DataAccess.UnitOfWork
 {
     internal class UnitOfWork : IUnitOfWork, IDisposable
     {

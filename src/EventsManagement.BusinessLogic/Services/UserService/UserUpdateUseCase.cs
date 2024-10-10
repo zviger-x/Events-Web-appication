@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
-using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Validators.Interfaces;
+using EventsManagement.DataAccess.UnitOfWork;
 using EventsManagement.DataObjects.Entities;
 using Microsoft.AspNet.Identity;
 

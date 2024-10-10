@@ -1,6 +1,6 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.UnitOfWork;
 using EventsManagement.BusinessLogic.Validation.Messages;
+using EventsManagement.DataAccess.UnitOfWork;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
