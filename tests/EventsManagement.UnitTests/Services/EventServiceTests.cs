@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.EventService;
-using EventsManagement.BusinessLogic.UnitOfWork;
+using EventsManagement.BusinessLogic.UseCases.Event;
 using EventsManagement.BusinessLogic.Validation.Validators;
 using EventsManagement.DataAccess.Repositories.Interfaces;
+using EventsManagement.DataAccess.UnitOfWork;
 using EventsManagement.DataObjects.Entities;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using MockQueryable;
 using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using MockQueryable;
-using FluentValidation;
 
 namespace EventsManagement.UnitTests.Services
 {
@@ -25,12 +27,8 @@ namespace EventsManagement.UnitTests.Services
         private EventUpdateUseCase _eventUpdateUseCase;
         private EventDeleteUseCase _eventDeleteUseCase;
         private EventGetAllUseCase _eventGetAllUseCase;
-        private EventGetPaginatedListUseCase _eventGetPaginatedListUseCase;
-        private EventGetByCategoryUseCase _eventGetByCategoryUseCase;
-        private EventGetByDateUseCase _eventGetByDateUseCase;
+        private EventGetAllSortedAndPaginatedUseCase _eventGetAllSortedAndPaginatedUseCase;
         private EventGetByIdUseCase _eventGetByIdUseCase;
-        private EventGetByNameUseCase _eventGetByNameUseCase;
-        private EventGetByVenueUseCase _eventGetByVenueUseCase;
 
         [SetUp]
         public void Setup()
@@ -53,12 +51,8 @@ namespace EventsManagement.UnitTests.Services
             _eventUpdateUseCase = new EventUpdateUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
             _eventDeleteUseCase = new EventDeleteUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
             _eventGetAllUseCase = new EventGetAllUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
-            _eventGetPaginatedListUseCase = new EventGetPaginatedListUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
-            _eventGetByCategoryUseCase = new EventGetByCategoryUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
-            _eventGetByDateUseCase = new EventGetByDateUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
+            _eventGetAllSortedAndPaginatedUseCase = new EventGetAllSortedAndPaginatedUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
             _eventGetByIdUseCase = new EventGetByIdUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
-            _eventGetByNameUseCase = new EventGetByNameUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
-            _eventGetByVenueUseCase = new EventGetByVenueUseCase(_unitOfWorkMock.Object, _mapperMock.Object, _validator);
         }
 
         #region --- Positive Cases ---
@@ -82,7 +76,7 @@ namespace EventsManagement.UnitTests.Services
             _unitOfWorkMock.Setup(uow => uow.EventRepository.CreateAsync(eventEntity)).Returns(Task.CompletedTask);
 
             // Act
-            await _eventCreateUseCase.CreateAsync(eventDTO);
+            await _eventCreateUseCase.Execute(eventDTO);
 
             // Assert
             _unitOfWorkMock.Verify(uow => uow.EventRepository.CreateAsync(eventEntity), Times.Once);
@@ -109,7 +103,7 @@ namespace EventsManagement.UnitTests.Services
             _unitOfWorkMock.Setup(uow => uow.EventRepository.Update(eventEntity)).Verifiable();
 
             // Act
-            await _eventUpdateUseCase.UpdateAsync(eventDTO);
+            await _eventUpdateUseCase.Execute(eventDTO);
 
             // Assert
             _unitOfWorkMock.Verify(uow => uow.EventRepository.Update(eventEntity), Times.Once);
@@ -136,7 +130,7 @@ namespace EventsManagement.UnitTests.Services
             _unitOfWorkMock.Setup(uow => uow.EventRepository.Delete(eventEntity)).Verifiable();
 
             // Act
-            await _eventDeleteUseCase.DeleteAsync(eventDTO);
+            await _eventDeleteUseCase.Execute(eventDTO);
 
             // Assert
             _unitOfWorkMock.Verify(uow => uow.EventRepository.Delete(eventEntity), Times.Once);
@@ -163,7 +157,7 @@ namespace EventsManagement.UnitTests.Services
             _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
 
             // Act
-            var result = await _eventGetAllUseCase.GetAllAsync();
+            var result = await _eventGetAllUseCase.Execute();
 
             // Assert
             _unitOfWorkMock.Verify(uow => uow.EventRepository.GetAll(), Times.Once);
@@ -174,7 +168,7 @@ namespace EventsManagement.UnitTests.Services
         public async Task GetPaginatedListAsync_ShouldReturnPaginatedList()
         {
             // Arrange
-            var pageIndex = 2;
+            var pageNumber = 2;
             var pageSize = 2;
             var eventEntities = new List<Event>
             {
@@ -201,71 +195,132 @@ namespace EventsManagement.UnitTests.Services
             _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
 
             // Act
-            var result = await _eventGetPaginatedListUseCase.GetPaginatedListAsync(pageIndex, pageSize);
+            var result = await _eventGetAllSortedAndPaginatedUseCase.Execute((null, null, pageNumber.ToString(), pageSize));
 
             // Assert
             _unitOfWorkMock.Verify(uow => uow.EventRepository.GetAll(), Times.Once);
-            ClassicAssert.IsTrue(excpectedEventDTOs.First().Id == result.Items.First().Id);
-            ClassicAssert.AreEqual(excpectedEventDTOs.Count(), result.Items.Count);
-            ClassicAssert.AreEqual(eventEntities.Count(), result.TotalCount);
-            ClassicAssert.AreEqual(pageIndex, result.PageIndex);
-            ClassicAssert.AreEqual(pageSize, result.PageSize);
+            ClassicAssert.IsTrue(excpectedEventDTOs.First().Id == result.First().Id);
         }
 
         [Test]
-        public async Task EventGetByCategoryUseCase_ShouldReturnEventsByCategory()
+        public async Task GetSortedListAsync_SortByName_ShouldReturnPaginatedList()
         {
             // Arrange
-            var category = "Category";
+            string sortBy = "name";
+            string value = "Event 2";
             var eventEntities = new List<Event>
             {
-                new Event { Id = 1, Name = "Name 1", Category = category },
-                new Event { Id = 2, Name = "Name 2", Category = category }
+                new Event { Id = 1, Name = "Event 1", Category = "Category 1", Venue = "Venue 1" },
+                new Event { Id = 2, Name = "Event 2", Category = "Category 2", Venue = "Venue 2" },
+                new Event { Id = 3, Name = "Event 3", Category = "Category 3", Venue = "Venue 3" },
+                new Event { Id = 4, Name = "Event 4", Category = "Category 4", Venue = "Venue 4" }
             }.AsQueryable().BuildMock();
-
-            var eventDTOs = new List<EventDTO>
+            var expectedEventDTOs = new List<EventDTO>
             {
-                new EventDTO { Id = 1, Name = "Name 1", Category = category },
-                new EventDTO { Id = 2, Name = "Name 2", Category = category }
-            }.AsQueryable().BuildMock();
+                new EventDTO { Id = 2, Name = "Event 2", Category = "Category 2", Venue = "Venue 2" }
+            };
 
-            _mapperMock.Setup(m => m.Map<IEnumerable<EventDTO>>(It.IsAny<IEnumerable<Event>>())).Returns(eventDTOs);
-            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetByCategory(category)).Returns(eventEntities);
+            _mapperMock.Setup(m => m.Map<EventDTO>(eventEntities.ElementAt(1))).Returns(expectedEventDTOs.First());
+            _mapperMock.Setup(m => m.Map<IEnumerable<EventDTO>>(It.IsAny<IEnumerable<Event>>())).Returns(expectedEventDTOs);
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetByNameAsync(value)).ReturnsAsync(eventEntities.ElementAt(1));
 
             // Act
-            var result = await _eventGetByCategoryUseCase.GetByCategoryAsync(category);
+            var result = await _eventGetAllSortedAndPaginatedUseCase.Execute((sortBy, value, null, default));
 
             // Assert
-            _unitOfWorkMock.Verify(uow => uow.EventRepository.GetByCategory(category), Times.Once);
-            ClassicAssert.AreEqual(eventDTOs.Count(), result.Count());
+            ClassicAssert.AreEqual(expectedEventDTOs.First().Id, result.First().Id);
         }
 
         [Test]
-        public async Task EventGetByDateUseCase_ShouldReturnEventsByDate()
+        public async Task GetSortedListAsync_SortByCategory_ShouldReturnPaginatedList()
         {
             // Arrange
-            var date = new DateTime(2024, 09, 28);
+            string sortBy = "category";
+            string value = "Category 2";
             var eventEntities = new List<Event>
             {
-                new Event { Id = 1, Name = "Event 1", DateAndTime = date },
-                new Event { Id = 2, Name = "Event 2", DateAndTime = date }
+                new Event { Id = 1, Name = "Event 1", Category = "Category 1", Venue = "Venue 1" },
+                new Event { Id = 2, Name = "Event 2", Category = "Category 2", Venue = "Venue 2" },
+                new Event { Id = 3, Name = "Event 3", Category = "Category 3", Venue = "Venue 3" },
+                new Event { Id = 4, Name = "Event 4", Category = "Category 4", Venue = "Venue 4" }
             }.AsQueryable().BuildMock();
-
-            var eventDTOs = new List<EventDTO>
+            var expectedEventDTOs = new List<EventDTO>
             {
-                new EventDTO { Id = 1, Name = "Event 1", DateAndTime = date },
-                new EventDTO { Id = 2, Name = "Event 2", DateAndTime = date }
-            }.AsQueryable().BuildMock();
+                new EventDTO { Id = 2, Name = "Event 2", Category = "Category 2", Venue = "Venue 2" }
+            };
 
-            _mapperMock.Setup(m => m.Map<IEnumerable<EventDTO>>(It.IsAny<IEnumerable<Event>>())).Returns(eventDTOs);
-            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetByDate(date)).Returns(eventEntities);
+            _mapperMock.Setup(m => m.Map<EventDTO>(eventEntities.ElementAt(1))).Returns(expectedEventDTOs.First());
+            _mapperMock.Setup(m => m.Map<IEnumerable<EventDTO>>(It.IsAny<IEnumerable<Event>>())).Returns(expectedEventDTOs);
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetByCategory(value)).Returns(eventEntities);
 
             // Act
-            var result = await _eventGetByDateUseCase.GetByDateAsync(date);
+            var result = await _eventGetAllSortedAndPaginatedUseCase.Execute((sortBy, value, null, default));
 
             // Assert
-            _unitOfWorkMock.Verify(uow => uow.EventRepository.GetByDate(date), Times.Once);
-            ClassicAssert.AreEqual(eventDTOs.Count(), result.Count());
+            ClassicAssert.AreEqual(expectedEventDTOs.First().Id, result.First().Id);
+        }
+
+        [Test]
+        public async Task GetSortedListAsync_SortByVenue_ShouldReturnPaginatedList()
+        {
+            // Arrange
+            string sortBy = "venue";
+            string value = "Venue 2";
+            var eventEntities = new List<Event>
+            {
+                new Event { Id = 1, Name = "Event 1", Category = "Category 1", Venue = "Venue 1" },
+                new Event { Id = 2, Name = "Event 2", Category = "Category 2", Venue = "Venue 2" },
+                new Event { Id = 3, Name = "Event 3", Category = "Category 3", Venue = "Venue 3" },
+                new Event { Id = 4, Name = "Event 4", Category = "Category 4", Venue = "Venue 4" }
+            }.AsQueryable().BuildMock();
+            var expectedEventDTOs = new List<EventDTO>
+            {
+                new EventDTO { Id = 2, Name = "Event 2", Category = "Category 2", Venue = "Venue 2" }
+            };
+
+            _mapperMock.Setup(m => m.Map<EventDTO>(eventEntities.ElementAt(1))).Returns(expectedEventDTOs.First());
+            _mapperMock.Setup(m => m.Map<IEnumerable<EventDTO>>(It.IsAny<IEnumerable<Event>>())).Returns(expectedEventDTOs);
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetByVenue(value)).Returns(eventEntities);
+
+            // Act
+            var result = await _eventGetAllSortedAndPaginatedUseCase.Execute((sortBy, value, null, default));
+
+            // Assert
+            ClassicAssert.AreEqual(expectedEventDTOs.First().Id, result.First().Id);
+        }
+
+        [Test]
+        public async Task GetSortedListAsync_SortByDate_ShouldReturnPaginatedList()
+        {
+            // Arrange
+            string sortBy = "date";
+            string value = "10.10.2024";
+            var eventEntities = new List<Event>
+            {
+                new Event { Id = 1, Name = "Event 1", Category = "Category 1", Venue = "Venue 1", DateAndTime = DateTime.Parse("09.10.2024"), },
+                new Event { Id = 2, Name = "Event 2", Category = "Category 2", Venue = "Venue 2", DateAndTime = DateTime.Parse("10.10.2024"), },
+                new Event { Id = 3, Name = "Event 3", Category = "Category 3", Venue = "Venue 3", DateAndTime = DateTime.Parse("11.10.2024"), },
+                new Event { Id = 4, Name = "Event 4", Category = "Category 4", Venue = "Venue 4", DateAndTime = DateTime.Parse("12.10.2024") }
+            }.AsQueryable().BuildMock();
+            var expectedEventDTOs = new List<EventDTO>
+            {
+                new EventDTO { Id = 2, Name = "Event 2", Category = "Category 2", Venue = "Venue 2", DateAndTime = DateTime.Parse("10.10.2024") }
+            };
+            var parsedDate = DateTime.Parse(value);
+
+            _mapperMock.Setup(m => m.Map<EventDTO>(eventEntities.ElementAt(1))).Returns(expectedEventDTOs.First());
+            _mapperMock.Setup(m => m.Map<IEnumerable<EventDTO>>(It.IsAny<IEnumerable<Event>>())).Returns(expectedEventDTOs);
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
+            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetByDate(parsedDate)).Returns(eventEntities);
+
+            // Act
+            var result = await _eventGetAllSortedAndPaginatedUseCase.Execute((sortBy, value, null, default));
+
+            // Assert
+            ClassicAssert.AreEqual(expectedEventDTOs.First().Id, result.First().Id);
         }
 
         [Test]
@@ -280,60 +335,12 @@ namespace EventsManagement.UnitTests.Services
             _unitOfWorkMock.Setup(uow => uow.EventRepository.GetByIdAsync(eventId)).ReturnsAsync(eventEntity);
 
             // Act
-            var result = await _eventGetByIdUseCase.GetByIdAsync(eventId);
+            var result = await _eventGetByIdUseCase.Execute(eventId);
 
             // Assert
             _mapperMock.Verify(m => m.Map<EventDTO>(eventEntity), Times.Once);
             _unitOfWorkMock.Verify(uow => uow.EventRepository.GetByIdAsync(eventId), Times.Once);
             ClassicAssert.AreEqual(eventDto, result);
-        }
-
-        [Test]
-        public async Task EventGetByNameUseCase_ShouldReturnEventsByName()
-        {
-            // Arrange
-            var eventName = "Name";
-            var eventEntity = new Event { Id = 1, Name = eventName };
-            var eventDto = new EventDTO { Id = 1, Name = eventName };
-
-            _mapperMock.Setup(m => m.Map<EventDTO>(eventEntity)).Returns(eventDto);
-            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetByNameAsync(eventName)).ReturnsAsync(eventEntity);
-
-            // Act
-            var result = await _eventGetByNameUseCase.GetByNameAsync(eventName);
-
-            // Assert
-            _mapperMock.Verify(m => m.Map<EventDTO>(eventEntity), Times.Once);
-            _unitOfWorkMock.Verify(uow => uow.EventRepository.GetByNameAsync(eventName), Times.Once);
-            ClassicAssert.AreEqual(eventDto, result);
-        }
-
-        [Test]
-        public async Task EventGetByVenueUseCase_ShouldReturnEventsByVenue()
-        {
-            // Arrange
-            var venue = "Sample Venue";
-            var eventEntities = new List<Event>
-            {
-                new Event { Id = 1, Name = "Event 1", Venue = venue },
-                new Event { Id = 2, Name = "Event 2", Venue = venue }
-            }.AsQueryable().BuildMock();
-
-            var eventDTOs = new List<EventDTO>
-            {
-                new EventDTO { Id = 1, Name = "Event 1", Venue = venue },
-                new EventDTO { Id = 2, Name = "Event 2", Venue = venue }
-            }.AsQueryable().BuildMock();
-
-            _mapperMock.Setup(m => m.Map<IEnumerable<EventDTO>>(It.IsAny<IEnumerable<Event>>())).Returns(eventDTOs);
-            _unitOfWorkMock.Setup(uow => uow.EventRepository.GetByVenue(venue)).Returns(eventEntities);
-
-            // Act
-            var result = await _eventGetByVenueUseCase.GetByVenueAsync(venue);
-
-            // Assert
-            _unitOfWorkMock.Verify(uow => uow.EventRepository.GetByVenue(venue), Times.Once);
-            ClassicAssert.AreEqual(eventDTOs.Count(), result.Count());
         }
         #endregion
 
@@ -357,7 +364,7 @@ namespace EventsManagement.UnitTests.Services
             };
 
             // Act & Assert
-            Assert.ThrowsAsync<ValidationException>(async () => await _eventCreateUseCase.CreateAsync(eventDTO));
+            Assert.ThrowsAsync<ValidationException>(async () => await _eventCreateUseCase.Execute(eventDTO));
         }
 
         [TestCase(null, "Description", "Category", 10)]
@@ -379,28 +386,7 @@ namespace EventsManagement.UnitTests.Services
             };
 
             // Act & Assert
-            Assert.ThrowsAsync<ValidationException>(async () => await _eventUpdateUseCase.UpdateAsync(eventDTO));
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        public void EventGetByCategoryUseCase_ShouldThrowArgumentNullException(string category)
-        {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await _eventGetByCategoryUseCase.GetByCategoryAsync(category));
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        public void EventGetByNameUseCase_ShouldThrowArgumentNullException(string name)
-        {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await _eventGetByNameUseCase.GetByNameAsync(name));
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        public void EventGetByVenueUseCase_ShouldThrowArgumentNullException(string venue)
-        {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await _eventGetByVenueUseCase.GetByVenueAsync(venue));
+            Assert.ThrowsAsync<ValidationException>(async () => await _eventUpdateUseCase.Execute(eventDTO));
         }
 
         [TestCase(-1)]
@@ -408,7 +394,7 @@ namespace EventsManagement.UnitTests.Services
         [TestCase(int.MinValue)]
         public void EventGetByIdUseCase_ShouldThrowArgumentOutOfRangeException(int id)
         {
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _eventGetByIdUseCase.GetByIdAsync(id));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _eventGetByIdUseCase.Execute(id));
         }
 
         [Test]
@@ -422,14 +408,11 @@ namespace EventsManagement.UnitTests.Services
             _unitOfWorkMock.Setup(uow => uow.EventRepository.GetAll()).Returns(eventEntities);
 
             // Act
-            var result = await _eventGetPaginatedListUseCase.GetPaginatedListAsync(pageIndex, pageSize);
+            var result = await _eventGetAllSortedAndPaginatedUseCase.Execute((null, null, pageIndex.ToString(), pageSize));
 
             // Assert
             ClassicAssert.IsNotNull(result);
-            ClassicAssert.AreEqual(0, result.Items.Count);
-            ClassicAssert.AreEqual(0, result.TotalCount);
-            ClassicAssert.AreEqual(pageIndex, result.PageIndex);
-            ClassicAssert.AreEqual(pageSize, result.PageSize);
+            ClassicAssert.AreEqual(0, result.Count());
         }
         #endregion
     }

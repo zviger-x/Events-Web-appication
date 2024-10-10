@@ -171,7 +171,6 @@ public class AccountController : ControllerBase
             EventId = eventId.Value,
             RegistrationDate = DateTime.UtcNow
         };
-    
         await _registerUserInEventUseCase.Execute(eventUser);
         return Ok("User registered for the event successfully.");
     }

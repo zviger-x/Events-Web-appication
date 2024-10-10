@@ -50,8 +50,6 @@ namespace EventsManagement.WebAPI.Server.Controllers
             [FromQuery] string? value = null,
             [FromQuery] string? page = null)
         {
-            Console.WriteLine($"[Controller] {sortby}, {value}, {page}, {PageSize}");
-
             try
             {
                 var events = await _getEventsSortedAndPaginatedUseCase.Execute((sortby, value, page, PageSize));
@@ -115,14 +113,6 @@ namespace EventsManagement.WebAPI.Server.Controllers
             await _eventDeleteUseCase.Execute(new EventDTO() { Id = id });
 
             return Ok();
-        }
-
-        private static class SortValues
-        {
-            public const string Name = "name";
-            public const string Category = "category";
-            public const string Venue = "venue";
-            public const string Date = "date";
         }
     }
 }
