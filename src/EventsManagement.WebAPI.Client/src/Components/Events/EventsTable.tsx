@@ -15,25 +15,23 @@ export default function EventsTable() {
     const [selectedSort, setSelectedSort] = useState<string | undefined>();
     const [filterValue, setFilterValue] = useState<string | undefined>();
 
-    const sortBy = searchParams.get("sortBy") || undefined;
+    const sortby = searchParams.get("sortby") || undefined;
     const value = searchParams.get("value") || undefined;
     const page = searchParams.get("page") || "1";
 
     useEffect(() => {
-        if (parseInt(page) <= 0) handlePageChange(1);
-
         const fetchData = async () => {
-            const fetchedEvents = await APIConnector.GetEvents(sortBy, value, page);
+            const fetchedEvents = await APIConnector.GetEvents(sortby, value, page);
             setEvents(fetchedEvents);
         };
 
         fetchData();
-    }, [sortBy, value, page]);
+    }, [searchParams]);
 
     const handlePageChange = async (newPage: number) => {
         if (newPage <= 0) newPage = 1;
 
-        const fetchedEvents = await APIConnector.GetEvents(sortBy, value, newPage.toString());
+        const fetchedEvents = await APIConnector.GetEvents(sortby, value, newPage.toString());
         if (fetchedEvents.length > 0) {
             const params = new URLSearchParams(searchParams.toString());
 
@@ -42,27 +40,24 @@ export default function EventsTable() {
         }
     };
 
-    const handleSortChange = (sortBy?: string, value?: string) => {
+    const handleApplyFilter = () => {
         const params = new URLSearchParams(searchParams.toString());
 
-        if (sortBy) {
-            params.set("sortBy", sortBy);
+        if (selectedSort) {
+            params.set("sortby", selectedSort);
         } else {
-            params.delete("sortBy");
+            params.delete("sortby");
         }
 
-        if (value) {
-            params.set("value", value);
+        if (filterValue) {
+            params.set("value", filterValue);
         } else {
             params.delete("value");
         }
 
-        setSearchParams(params);
-    };
+        params.set("page", "1");
 
-    const handleApplyFilter = () => {
-        handlePageChange(1);
-        handleSortChange(selectedSort || undefined, filterValue || undefined);
+        setSearchParams(params);
     };
 
     if (!events) {

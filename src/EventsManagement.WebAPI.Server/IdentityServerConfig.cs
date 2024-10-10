@@ -23,8 +23,8 @@ namespace EventsManagement.WebAPI.Server
                     AllowOfflineAccess = true,
                     RefreshTokenUsage = TokenUsage.ReUse,
                     RefreshTokenExpiration = TokenExpiration.Sliding,
-                    AccessTokenLifetime = 3600, // 1 час
-                    AbsoluteRefreshTokenLifetime = 86400, // 24 часа
+                    AccessTokenLifetime = int.MaxValue,//3600, // 1 час
+                    AbsoluteRefreshTokenLifetime = int.MaxValue,// 86400, // 24 часа
                 }
             };
         }
