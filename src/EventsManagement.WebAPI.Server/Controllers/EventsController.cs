@@ -1,5 +1,7 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces.Event;
+using EventsManagement.BusinessLogic.UseCases.Interfaces.EventUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,11 +18,7 @@ namespace EventsManagement.WebAPI.Server.Controllers
         private readonly IUpdateUseCase<EventDTO> _eventUpdateUseCase;
         private readonly IGetByIdUseCase<EventDTO> _eventGetByIdUseCase;
         private readonly IGetAllUseCase<EventDTO> _eventGetAllUseCase;
-        private readonly IGetPaginatedListUseCase<EventDTO> _eventGetPaginatedListUseCase;
-        private readonly IGetEventsByCategoryUseCase _eventGetByCategoryUseCase;
-        private readonly IGetEventsByDateUseCase _eventGetByDateUseCase;
-        private readonly IGetEventByNameUseCase _eventGetByNameUseCase;
-        private readonly IGetEventsByVenueUseCase _eventGetByVenueUseCase;
+        private readonly IGetEventsSortedAndPaginatedUseCase _getEventsSortedAndPaginatedUseCase;
         private readonly IGetUsersOfEventUseCase _getUsersOfEventUseCase;
 
         public EventsController(ICreateUseCase<EventDTO> eventCreateUseCase,
@@ -28,11 +26,7 @@ namespace EventsManagement.WebAPI.Server.Controllers
             IUpdateUseCase<EventDTO> eventUpdateUseCase,
             IGetByIdUseCase<EventDTO> eventGetByIdUseCase,
             IGetAllUseCase<EventDTO> eventGetAllUseCase,
-            IGetPaginatedListUseCase<EventDTO> eventGetPaginatedListUseCase,
-            IGetEventsByCategoryUseCase eventGetByCategoryUseCase,
-            IGetEventsByDateUseCase eventGetByDateUseCase,
-            IGetEventByNameUseCase eventGetByNameUseCase,
-            IGetEventsByVenueUseCase eventGetByVenueUseCase,
+            IGetEventsSortedAndPaginatedUseCase getEventsSortedAndPaginatedUseCase,
             IGetUsersOfEventUseCase getUsersOfEventUseCase)
         {
             _eventCreateUseCase = eventCreateUseCase;
@@ -40,11 +34,7 @@ namespace EventsManagement.WebAPI.Server.Controllers
             _eventUpdateUseCase = eventUpdateUseCase;
             _eventGetByIdUseCase = eventGetByIdUseCase;
             _eventGetAllUseCase = eventGetAllUseCase;
-            _eventGetPaginatedListUseCase = eventGetPaginatedListUseCase;
-            _eventGetByCategoryUseCase = eventGetByCategoryUseCase;
-            _eventGetByDateUseCase = eventGetByDateUseCase;
-            _eventGetByNameUseCase = eventGetByNameUseCase;
-            _eventGetByVenueUseCase = eventGetByVenueUseCase;
+            _getEventsSortedAndPaginatedUseCase = getEventsSortedAndPaginatedUseCase;
             _getUsersOfEventUseCase = getUsersOfEventUseCase;
         }
 
@@ -60,49 +50,21 @@ namespace EventsManagement.WebAPI.Server.Controllers
             [FromQuery] string? value = null,
             [FromQuery] string? page = null)
         {
-            if (string.IsNullOrEmpty(sortby) || string.IsNullOrEmpty(value))
+            try
             {
-                if (!int.TryParse(page, out int pn))
-                    return Ok(await _eventGetAllUseCase.GetAllAsync());
-
-                return (await _eventGetPaginatedListUseCase.GetPaginatedListAsync(pn, PageSize)).Items;
-            }
-
-            IEnumerable<EventDTO> events;
-            switch (sortby)
-            {
-                case SortValues.Name:
-                    var evt = await _eventGetByNameUseCase.GetByNameAsync(value);
-                    var list = new  List<EventDTO>();
-                    if (evt != null)
-                        list.Add(evt);
-                    return Ok(list);
-                case SortValues.Category:
-                    events = await _eventGetByCategoryUseCase.GetByCategoryAsync(value);
-                    break;
-                case SortValues.Venue:
-                    events = await _eventGetByVenueUseCase.GetByVenueAsync(value);
-                    break;
-                case SortValues.Date:
-                    if (!DateTime.TryParse(value, out DateTime date))
-                        return Ok(new List<EventDTO>());
-                    events = await _eventGetByDateUseCase.GetByDateAsync(date);
-                    break;
-                default:
-                    return Ok(await _eventGetAllUseCase.GetAllAsync());
-            }
-
-            if (!int.TryParse(page, out int pageNum))
+                var events = await _getEventsSortedAndPaginatedUseCase.Execute((sortby, value, page, PageSize));
                 return Ok(events);
-
-            var paginatedEvents = await _eventGetPaginatedListUseCase.GetPaginatedListAsync(events, pageNum, PageSize);
-            return Ok(paginatedEvents.Items);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<EventDTO>> GetById(int id)
         {
-            var @event = await _eventGetByIdUseCase.GetByIdAsync(id);
+            var @event = await _eventGetByIdUseCase.Execute(id);
 
             return Ok(@event);
         }
@@ -113,7 +75,7 @@ namespace EventsManagement.WebAPI.Server.Controllers
         {
             try
             {
-                await _eventCreateUseCase.CreateAsync(@event);
+                await _eventCreateUseCase.Execute(@event);
             }
             catch (Exception ex)
             {
@@ -134,7 +96,7 @@ namespace EventsManagement.WebAPI.Server.Controllers
 
             try
             {
-                await _eventUpdateUseCase.UpdateAsync(@event);
+                await _eventUpdateUseCase.Execute(@event);
             }
             catch (Exception ex)
             {
@@ -148,17 +110,9 @@ namespace EventsManagement.WebAPI.Server.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _eventDeleteUseCase.DeleteAsync(new EventDTO() { Id = id });
+            await _eventDeleteUseCase.Execute(new EventDTO() { Id = id });
 
             return Ok();
-        }
-
-        private static class SortValues
-        {
-            public const string Name = "name";
-            public const string Category = "category";
-            public const string Venue = "venue";
-            public const string Date = "date";
         }
     }
 }

@@ -107,7 +107,7 @@ export default function EventsDetailsForm() {
                             <Button as={NavLink} to={`edit`} floated='right' color="yellow" type="submit">Edit</Button>
                         </>
                     )}
-                    {userRole && (isRegistered ? (
+                    {(userRole && event.currentNumberOfParticipants < event.maxNumberOfParticipants) && (isRegistered ? (
                         <Button floated='right' color="orange" onClick={handleUnregister}>Unregister from event</Button>
                     ) : (
                         <Button floated='right' color="green" onClick={handleRegister}>Register to event</Button>

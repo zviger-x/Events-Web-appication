@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using EventsManagement.BusinessLogic.DataTransferObjects;
-using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces.EventUser;
 using EventsManagement.DataObjects.Entities;
 
 namespace EventsManagement.BusinessLogic.AutoMapping
@@ -16,7 +16,7 @@ namespace EventsManagement.BusinessLogic.AutoMapping
     
         public void Process(Event source, EventDTO destination, ResolutionContext context)
         {
-            var eventUsers = _getUsersOfEventUseCase.GetUsersOfEvent(source.Id).ToList();
+            var eventUsers = _getUsersOfEventUseCase.Execute(source.Id).ToList();
 
             destination.CurrentNumberOfParticipants = eventUsers.Count;
         }

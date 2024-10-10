@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventsManagement.UnitTests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventsManagement.LocalTests", "tests\EventsManagement.LocalTests\EventsManagement.LocalTests.csproj", "{6083F978-09F7-404F-8CC0-ECD2BE697AB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventsManagement.WebAPI.Server", "src\EventsManagement.WebAPI.Server\EventsManagement.WebAPI.Server.csproj", "{9F67D539-BDFB-4C60-B02D-CEFEDCF0414E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventsManagement.WebAPI.Server", "src\EventsManagement.WebAPI.Server\EventsManagement.WebAPI.Server.csproj", "{9F67D539-BDFB-4C60-B02D-CEFEDCF0414E}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "EventsManagement.WebAPI.Client", "src\eventsmanagement.webapi.client\EventsManagement.WebAPI.Client.esproj", "{DDCD8FA8-FA53-4731-B373-01BEC95D25B7}"
 EndProject

@@ -15,5 +15,7 @@
         public const string EmailNotEmpty = "Email cannot be empty.";
         public const string EmailInvalid = "Email format is invalid.";
         public const string EmailMustBeUnique = "Email must be unique.";
+
+        public const string InvalidEmailOrPassword = "Invalid email or password";
     }
 }

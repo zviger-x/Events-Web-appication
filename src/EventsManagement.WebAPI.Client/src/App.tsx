@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import './App.css';
 import EventsTable from './Components/Events/EventsTable';
 import { Container } from 'semantic-ui-react';
@@ -16,7 +16,9 @@ function App() {
     return (
         <>
             <div className="app-tab-container">
-                <h1> Events management application </h1>
+                <Link to="/">
+                    <h1>Events management application</h1>
+                </Link>
                 <UserLoginRegisterMinitab />
             </div>
             {location.pathname === '/' ? <EventsTable /> : (
