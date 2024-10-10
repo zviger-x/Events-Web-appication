@@ -1,5 +1,6 @@
 ﻿using EventsManagement.BusinessLogic.DataTransferObjects;
 using EventsManagement.BusinessLogic.Services.Interfaces;
+using EventsManagement.BusinessLogic.UseCases.Interfaces;
 using EventsManagement.BusinessLogic.UseCases.Interfaces.EventUser;
 using EventsManagement.BusinessLogic.UseCases.Interfaces.User;
 using EventsManagement.WebAPI.Server;
@@ -24,6 +25,7 @@ public class AccountController : ControllerBase
     private readonly IEventUserGetByUserIdAndEventIdUseCase _eventUserGetByUserIdAndEventIdUseCase;
     private readonly IRegisterUserInEventUseCase _registerUserInEventUseCase;
     private readonly IUnregisterUserInEventUseCase _unregisterUserInEventUseCase;
+    private readonly IGenerateJwtTokenUseCase _generateJwtTokenUseCase;
     private readonly string _secretKey;
     private readonly string _issuer;
     private readonly string _audience;
@@ -37,7 +39,8 @@ public class AccountController : ControllerBase
         ICheckRegistrationUseCase eventUserCheckRegistrationUseCase,
         IEventUserGetByUserIdAndEventIdUseCase eventUserGetByUserIdAndEventIdUseCase,
         IRegisterUserInEventUseCase registerUserInEventUseCase,
-        IUnregisterUserInEventUseCase unregisterUserInEventUseCase)
+        IUnregisterUserInEventUseCase unregisterUserInEventUseCase,
+        IGenerateJwtTokenUseCase generateJwtTokenUseCase)
     {
         _createUserUseCase = createUserUseCase;
         _updateUserUseCase = updateUserUseCase;
@@ -49,6 +52,7 @@ public class AccountController : ControllerBase
         _eventUserGetByUserIdAndEventIdUseCase = eventUserGetByUserIdAndEventIdUseCase;
         _registerUserInEventUseCase = registerUserInEventUseCase;
         _unregisterUserInEventUseCase = unregisterUserInEventUseCase;
+        _generateJwtTokenUseCase = generateJwtTokenUseCase;
         _secretKey = JwtSettings.SecretKey;
         _issuer = JwtSettings.Issuer;
         _audience = JwtSettings.Audience;
@@ -70,7 +74,7 @@ public class AccountController : ControllerBase
         if (!isPasswordValid)
             return BadRequest(errorMessageInvalid);
 
-        var token = GenerateTokenAsync(user);
+        var token = _generateJwtTokenUseCase.Execute((user, _secretKey, _issuer, _audience));
         return Ok(new { AccessToken = token });
     }
 
@@ -194,28 +198,5 @@ public class AccountController : ControllerBase
         await _unregisterUserInEventUseCase.Execute(new EventUserDTO() { Id = eventUser.Id });
 
         return Ok("User unregistered from the event successfully.");
-    }
-
-    private string GenerateTokenAsync(UserDTO user)
-    {
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role),
-            new Claim("Id", user.Id.ToString()),
-        };
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: _issuer,
-            audience: _audience,
-            claims: claims,
-            expires: DateTime.Now.AddHours(1),
-            signingCredentials: creds);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
